@@ -8,13 +8,13 @@ jobs:
       fail-fast: false
       matrix:
         operating-system: [ubuntu-latest]
-        php-versions: ['7.2','7.4']
+        php-versions: ['7.4']
         node-version: ['14.7']
     services:
       mysql:
         image: mysql:8.0
         env:
-          MYSQL_ROOT_PASSWORD: 'password'
+          MYSQL_ROOT_PASSWORD: 'root'
         ports:
           - 3306:3306
     steps:
