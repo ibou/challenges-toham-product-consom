@@ -1,24 +1,36 @@
 security:
-    # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
-    providers:
-        users_in_memory: { memory: null }
-    firewalls:
-        dev:
-            pattern: ^/(_(profiler|wdt)|css|images|js)/
-            security: false
-        main:
-            anonymous: true
-            lazy: true
-            provider: users_in_memory
+  encoders:
+    App\Entity\User:
+      algorithm: auto
+  providers:
+    user_doctrine:
+      entity:
+        # the class of the entity that represents users
+        class: App\Entity\User
+        # the property to query by - e.g. username, email, etc
+        property: email
+  firewalls:
+    dev:
+      pattern: ^/(_(profiler|wdt)|css|images|js)/
+      security: false
+    main:
+      anonymous: true
+      lazy: true
+      provider: user_doctrine
 
-            # activate different ways to authenticate
-            # https://symfony.com/doc/current/security.html#firewalls-authentication
 
-            # https://symfony.com/doc/current/security/impersonating_user.html
-            # switch_user: true
+      # activate different ways to authenticate
+      # https://symfony.com/doc/current/security.html#firewalls-authentication
 
-    # Easy way to control access for large sections of your site
-    # Note: Only the *first* access control that matches will be used
-    access_control:
-        # - { path: ^/admin, roles: ROLE_ADMIN }
-        # - { path: ^/profile, roles: ROLE_USER }
+      # https://symfony.com/doc/current/security/impersonating_user.html
+      # switch_user: true
+
+  # Easy way to control access for large sections of your site
+  # Note: Only the *first* access control that matches will be used
+  role_hierarchy:
+    ROLE_PRODUCER: [ROLE_USER]
+    ROLE_CUSTOMER: [ROLE_USER]
+  access_control:
+  # - { path: ^/admin, roles: ROLE_ADMIN }
+   - { path: ^/profile, roles: ROLE_USER }
+   - { path: ^/, roles: IS_AUTHENTICATED_ANONYMOUSLY }
