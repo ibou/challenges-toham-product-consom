@@ -26,6 +26,7 @@ class SecurityController extends AbstractController
     /**
      * @param string $role
      * @param Request $request
+     * @param UserPasswordEncoderInterface $userPasswordEncoder
      * @return Response
      * @Route("/registration/{role}", name="registration")
      */
@@ -42,6 +43,7 @@ class SecurityController extends AbstractController
             $user->setPassword(
                 $userPasswordEncoder->encodePassword($user, $user->getPlainPassword())
             );
+
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($user);
             $entityManager->flush();
