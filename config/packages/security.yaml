@@ -5,9 +5,7 @@ security:
   providers:
     user_doctrine:
       entity:
-        # the class of the entity that represents users
         class: App\Entity\User
-        # the property to query by - e.g. username, email, etc
         property: email
   firewalls:
     dev:
@@ -17,6 +15,11 @@ security:
       anonymous: true
       lazy: true
       provider: user_doctrine
+      logout:
+        path: security_logout
+      guard:
+        authenticators:
+          - App\Security\Guard\WebAuthenticator
 
 
       # activate different ways to authenticate
@@ -28,9 +31,9 @@ security:
   # Easy way to control access for large sections of your site
   # Note: Only the *first* access control that matches will be used
   role_hierarchy:
-    ROLE_PRODUCER: [ROLE_USER]
-    ROLE_CUSTOMER: [ROLE_USER]
+    ROLE_PRODUCER: [ ROLE_USER ]
+    ROLE_CUSTOMER: [ ROLE_USER ]
   access_control:
-  # - { path: ^/admin, roles: ROLE_ADMIN }
-   - { path: ^/profile, roles: ROLE_USER }
-   - { path: ^/, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+    # - { path: ^/admin, roles: ROLE_ADMIN }
+    - { path: ^/profile, roles: ROLE_USER }
+    - { path: ^/, roles: IS_AUTHENTICATED_ANONYMOUSLY }

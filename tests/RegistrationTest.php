@@ -29,7 +29,7 @@ class RegistrationTest extends WebTestCase
          */
         $router = $client->getContainer()->get('router');
 
-        $crawler = $client->request(Request::METHOD_GET, $router->generate('registration', [
+        $crawler = $client->request(Request::METHOD_GET, $router->generate('security_registration', [
             'role' => $role
         ]));
 
@@ -38,8 +38,7 @@ class RegistrationTest extends WebTestCase
                 "registration[email]" => "email@email.com",
                 "registration[plainPassword]" => "dev123",
                 "registration[firstName]" => "firstName tester John",
-                "registration[lastName]" => "lastName tester W.",
-                "registration[email]" => "email@email.com",
+                "registration[lastName]" => "lastName tester W."
             ]);
 
         $client->submit($form);
