@@ -45,7 +45,6 @@ class AppFixtures extends Fixture
             ->setLastName("Doe")
             ->setEmail("producer@gmail.com")
         ;
-
         $manager->persist($producer);
         $manager->flush();
 

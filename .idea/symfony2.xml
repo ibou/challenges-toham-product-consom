@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="Symfony2PluginSettings">
-    <option name="pathToTranslation" value="" />
-    <option name="directoryToWeb" value="" />
-    <option name="directoryToApp" value="" />
     <option name="pluginEnabled" value="true" />
-    <option name="lastServiceGeneratorLanguage" value="yaml" />
   </component>
 </project>
