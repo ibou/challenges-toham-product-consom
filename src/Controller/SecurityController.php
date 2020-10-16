@@ -6,13 +6,18 @@ namespace App\Controller;
 
 namespace App\Controller;
 
+use App\Dto\ForgottenPasswordInput;
 use App\Entity\Customer;
 use App\Entity\Producer;
+use App\Entity\User;
+use App\Form\ForgottenPasswordType;
 use App\Form\RegistrationType;
-use Psr\Link\LinkInterface;
+use App\Repository\UserRepository;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
@@ -36,11 +41,11 @@ class SecurityController extends AbstractController
         string $role,
         Request $request,
         UserPasswordEncoderInterface $userPasswordEncoder
-    ): Response
-    {
+    ): Response {
 
         $user = Producer::ROLE === $role ? new Producer : new Customer;
         $form = $this->createForm(RegistrationType::class, $user)->handleRequest($request);
+
 
         if ($form->isSubmitted() && $form->isValid()) {
             $user->setPassword(
@@ -82,6 +87,61 @@ class SecurityController extends AbstractController
      * @Route("/logout", name="security_logout")
      */
     public function logout(): void
+    {
+    }
+
+    /**
+     * @Route("/forgotten-password", name="security_forgotten_password")
+     * @param Request $request
+     * @param UserRepository $userRepository
+     * @param MailerInterface $mailer
+     * @return Response
+     */
+    public function forgottenPassword(
+        Request $request,
+        UserRepository $userRepository,
+        MailerInterface $mailer
+    ): Response {
+        $forgottenPasswordInput = new ForgottenPasswordInput();
+        $form = $this->createForm(ForgottenPasswordType::class, $forgottenPasswordInput)->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $user = $userRepository->findOneByEmail($forgottenPasswordInput->getEmail());
+            /**@var User $user */
+            $user->hasForgotHisPassword();
+            $this->getDoctrine()->getManager()->flush();
+
+            /*
+                        $email = (new TemplatedEmail())
+                            ->to("hello@productconsumer.com")
+                            ->from("ibrah@gmail.com")
+                            ->context(["forgottenPassword" => $user->getForgottenPassword()])
+                            ->htmlTemplate("emails/forgotten_password.html.twig");
+
+                        $mailer->send($email);
+                        */
+
+            $this->addFlash(
+                "success",
+                "Votre demande d'oubli de mot de passe a bien été enregistrée. 
+                Vous allez recevoir un email pour réinitialiser votre mot de passe"
+            );
+
+            return $this->redirectToRoute('security_login');
+        }
+        return $this->render(
+            'ui/security/forgotten_password.html.twig',
+            [
+                'form' => $form->createView(),
+            ]
+        );
+    }
+
+    /**
+     * @Route("/reset-password/{token}", name="security_reset_password")
+     * @param Uuid $token
+     */
+    public function resetPassword(Uuid $token)
     {
     }
 }
