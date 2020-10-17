@@ -4,9 +4,8 @@
 namespace App\EntityListener;
 
 use App\Entity\Farm;
-use App\Entity\Producer;
-use Ramsey\Uuid\Uuid;
-
+use App\Entity\Producer; 
+use Ramsey\Uuid\Uuid; 
 class ProducerListener
 {
     /**
