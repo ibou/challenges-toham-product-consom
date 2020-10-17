@@ -27,6 +27,9 @@
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                             <a class="dropdown-item" href="#">Mot de passe</a>
                             <a class="dropdown-item" href="#">Mes informations</a>
+                            {% if is_granted("ROlE_PRODUCER") %}
+                                <a class="dropdown-item" href="{{ path('farm_update') }}">Modifier mon exploitation</a>
+                            {% endif %}
                             <a class="dropdown-item" href="{{ path("security_logout") }}">Se déconnecter</a>
                         </div>
                     </li>
