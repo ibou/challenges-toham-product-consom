@@ -1,5 +1,6 @@
 <?php
 
+<<<<<<< HEAD
 declare(strict_types=1);
 
 namespace App\Entity;
@@ -7,6 +8,14 @@ namespace App\Entity;
 use Ramsey\Uuid\UuidInterface;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
+=======
+namespace App\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+use Ramsey\Uuid\Doctrine\UuidGenerator;
+use Ramsey\Uuid\UuidInterface;
+use Symfony\Component\Validator\Constraints as Assert;
+>>>>>>> 4b5f9cc... Update farm info (#8)
 
 /**
  * Class Farm
@@ -34,13 +43,20 @@ class Farm
     private ?string $description = null;
 
     /**
+<<<<<<< HEAD
      * @ORM\OneToOne(targetEntity="App\Entity\Producer", mappedBy="farm")
+=======
+     * @ORM\OneToOne(targetEntity="Producer", mappedBy="farm")
+>>>>>>> 4b5f9cc... Update farm info (#8)
      * @ORM\JoinColumn(onDelete="CASCADE")
      */
     private Producer $producer;
 
+<<<<<<< HEAD
    
 
+=======
+>>>>>>> 4b5f9cc... Update farm info (#8)
     /**
      * @return UuidInterface|null
      */
