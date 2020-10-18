@@ -111,7 +111,7 @@ class SecurityController extends AbstractController
             $user->hasForgotHisPassword();
             $this->getDoctrine()->getManager()->flush();
 
-            /*
+
                         $email = (new TemplatedEmail())
                             ->to("hello@productconsumer.com")
                             ->from("ibrah@gmail.com")
@@ -119,7 +119,7 @@ class SecurityController extends AbstractController
                             ->htmlTemplate("emails/forgotten_password.html.twig");
 
                         $mailer->send($email);
-                        */
+
 
             $this->addFlash(
                 "success",
