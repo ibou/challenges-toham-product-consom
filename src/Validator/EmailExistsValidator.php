@@ -9,7 +9,6 @@ use Symfony\Component\Validator\ConstraintValidator;
 
 class EmailExistsValidator extends ConstraintValidator
 {
-
     private UserRepository $userRepository;
 
     /**

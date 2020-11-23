@@ -3,7 +3,6 @@
 namespace App\Tests;
 
 use Generator;
-use PHPUnit\Framework\TestCase;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,7 +14,6 @@ use Symfony\Component\Routing\RouterInterface;
  */
 class FarmUpdateTest extends WebTestCase
 {
-
     use AuthenticationTrait;
 
     public function testFarmUpdateTest(): void

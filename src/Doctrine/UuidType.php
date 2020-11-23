@@ -53,6 +53,6 @@ class UuidType extends GuidType
             return (string) $value;
         }
 
-            throw ConversionException::conversionFailed($value, static::NAME);
+        throw ConversionException::conversionFailed($value, static::NAME);
     }
 }

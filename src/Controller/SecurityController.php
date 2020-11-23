@@ -42,7 +42,6 @@ class SecurityController extends AbstractController
         Request $request,
         UserPasswordEncoderInterface $userPasswordEncoder
     ): Response {
-
         $user = Producer::ROLE === $role ? new Producer : new Customer;
         $form = $this->createForm(RegistrationType::class, $user)->handleRequest($request);
 
@@ -75,7 +74,6 @@ class SecurityController extends AbstractController
      */
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
-
         return $this->render('ui/security/login.html.twig', [
             'last_username' => $authenticationUtils->getLastUsername(),
             'error' => $authenticationUtils->getLastAuthenticationError()
@@ -112,13 +110,13 @@ class SecurityController extends AbstractController
             $this->getDoctrine()->getManager()->flush();
 
 
-                        $email = (new TemplatedEmail())
+            $email = (new TemplatedEmail())
                             ->to("hello@productconsumer.com")
                             ->from("ibrah@gmail.com")
                             ->context(["forgottenPassword" => $user->getForgottenPassword()])
                             ->htmlTemplate("emails/forgotten_password.html.twig");
 
-                        $mailer->send($email);
+            $mailer->send($email);
 
 
             $this->addFlash(
