@@ -11,6 +11,8 @@ use App\Entity\Product;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\Uid\Uuid;
 
 /**
  * Class ProductFixtures
@@ -24,7 +26,7 @@ class ProductFixtures extends Fixture implements DependentFixtureInterface
     public function load(ObjectManager $manager)
     {
         $farms = $manager->getRepository(Farm::class)->findAll();
-
+        
         /** @var Farm $farm */
         foreach ($farms as $farm) {
             for ($i = 1; $i <= 10; $i++) {
@@ -39,15 +41,35 @@ class ProductFixtures extends Fixture implements DependentFixtureInterface
                 $manager->persist($product);
             }
         }
-
+        
         $manager->flush();
     }
-
+    
     /**
      * @inheritDoc
      */
     public function getDependencies()
     {
         return [AppFixtures::class];
+    }
+    
+    /**
+     * @return UploadedFile
+     */
+    private function createImage(): UploadedFile
+    {
+        $filename = Uuid::v4() . '.png';
+        copy(
+            __DIR__ . '/../../public/uploads/image.png',
+            __DIR__ . '/../../public/uploads/' . $filename
+        );
+        
+        return new UploadedFile(
+            __DIR__ . '/../../public/uploads/' . $filename,
+            $filename,
+            'image/png',
+            null,
+            true
+        );
     }
 }

@@ -1,13 +1,19 @@
 <?php
 
-
 namespace App\EntityListener;
 
 use App\Entity\Product;
 use Symfony\Component\Security\Core\Security;
 
+/**
+ * Class ProductListener
+ * @package App\EntityListener
+ */
 class ProductListener
 {
+    /**
+     * @var Security
+     */
     private Security $security;
 
     /**
@@ -24,6 +30,10 @@ class ProductListener
      */
     public function prePersist(Product $product): void
     {
-        //$product->setFarm($this->security->getUser()->getFarm());
+        if ($product->getFarm() !== null) {
+            return;
+        }
+
+        $product->setFarm($this->security->getUser()->getFarm());
     }
 }

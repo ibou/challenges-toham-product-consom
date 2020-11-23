@@ -30,7 +30,6 @@ class AppFixtures extends Fixture
      */
     public function load(ObjectManager $manager)
     {
-
         $customer = new Customer();
         $customer->setPassword($this->userPasswordEncoder->encodePassword($customer, "dev"));
         $customer->setFirstName("Jimmy")

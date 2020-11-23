@@ -2,111 +2,130 @@
 
 namespace App\Entity;
 
-use App\Repository\ProductRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
 use Ramsey\Uuid\UuidInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\ProductRepository", repositoryClass=ProductRepository::class)
+ * Class Product
+ * @package App\Entity
+ * @ORM\Entity
  */
 class Product
 {
+    
     /**
      * @ORM\Id
      * @ORM\Column(type="uuid")
      * @ORM\GeneratedValue(strategy="CUSTOM")
      * @ORM\CustomIdGenerator(class=UuidGenerator::class)
      */
-    private ?UuidInterface $id = null;
-
+    private UuidInterface $id;
+    
     /**
      * @ORM\Column
      * @Assert\NotBlank
      */
     private string $name = "";
-
+    
+    /**
+     * @ORM\Column(type="text")
+     * @Assert\NotBlank
+     */
+    private string $description = "";
+    
     /**
      * @ORM\Column(type="integer")
      * @Assert\NotBlank
      * @Assert\GreaterThanOrEqual(0)
      */
     private int $quantity = 0;
-
+    
     /**
-     * @ORM\Column(type="text")
-     * @Assert\NotBlank
-     */
-    private string $description = "";
-
-    /**
-     * @ORM\ManyToOne(targetEntity=Farm::class, inversedBy="products")
+     * @ORM\ManyToOne(targetEntity="Farm")
      * @ORM\JoinColumn(onDelete="CASCADE", nullable=false)
      */
     private Farm $farm;
-
+    
     /**
-     * @var Price
      * @ORM\Embedded(class="Price")
      * @Assert\Valid
      */
     private Price $price;
-
+    
+    /**
+     * @return Uuid
+     */
     public function getId(): UuidInterface
     {
         return $this->id;
     }
-
-    public function getName(): ?string
+    
+    /**
+     * @return string
+     */
+    public function getName(): string
     {
         return $this->name;
     }
-
-    public function setName(string $name): self
+    
+    /**
+     * @param string $name
+     */
+    public function setName(string $name): void
     {
         $this->name = $name;
-
-        return $this;
     }
-
-
-    public function getQuantity(): ?int
-    {
-        return $this->quantity;
-    }
-
-    public function setQuantity(int $quantity): self
-    {
-        $this->quantity = $quantity;
-
-        return $this;
-    }
-
-    public function getDescription(): ?string
+    
+    /**
+     * @return string
+     */
+    public function getDescription(): string
     {
         return $this->description;
     }
-
-    public function setDescription(string $description): self
+    
+    /**
+     * @param string $description
+     */
+    public function setDescription(string $description): void
     {
         $this->description = $description;
-
-        return $this;
     }
-
-    public function getFarm(): ?Farm
+    
+    /**
+     * @return int
+     */
+    public function getQuantity(): int
+    {
+        return $this->quantity;
+    }
+    
+    /**
+     * @param int $quantity
+     */
+    public function setQuantity(int $quantity): void
+    {
+        $this->quantity = $quantity;
+    }
+    
+    /**
+     * @return Farm
+     */
+    public function getFarm(): Farm
     {
         return $this->farm;
     }
-
-    public function setFarm(Farm $farm): self
+    
+    /**
+     * @param Farm $farm
+     */
+    public function setFarm(Farm $farm): void
     {
         $this->farm = $farm;
-
-        return $this;
     }
-
+    
     /**
      * @return Price
      */
@@ -114,7 +133,7 @@ class Product
     {
         return $this->price;
     }
-
+    
     /**
      * @param Price $price
      */
