@@ -5,7 +5,6 @@ namespace App\Entity;
 use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Uid\Uuid;
-use Symfony\Component\Uid\UuidV4;
 
 /**
  * Class ForgottenPassword
@@ -34,7 +33,7 @@ class ForgottenPassword
     }
 
     /**
-     * @return string|UuidV4|null
+     * @return string|Uuid|null
      */
     public function getToken()
     {
@@ -42,7 +41,7 @@ class ForgottenPassword
     }
 
     /**
-     * @param string|UuidV4|null $token
+     * @param string|Uuid|null $token
      */
     public function setToken($token): void
     {
