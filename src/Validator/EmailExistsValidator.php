@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Validator;
 
 use App\Repository\UserRepository;

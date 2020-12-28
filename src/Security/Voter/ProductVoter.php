@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Security\Voter;
 
 use App\Entity\Producer;
@@ -11,9 +10,9 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 class ProductVoter extends Voter
 {
     public const UPDATE = "update";
-    
+
     public const DELETE = "delete";
-    
+
     /**
      * @inheritDoc
      */
@@ -21,7 +20,7 @@ class ProductVoter extends Voter
     {
         return in_array($attribute, [self::UPDATE, self::DELETE]) && $subject instanceof Product;
     }
-    
+
     /**
      * @inheritDoc
      */

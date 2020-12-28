@@ -26,7 +26,7 @@ class ProductFixtures extends Fixture implements DependentFixtureInterface
     public function load(ObjectManager $manager)
     {
         $farms = $manager->getRepository(Farm::class)->findAll();
-        
+
         /** @var Farm $farm */
         foreach ($farms as $farm) {
             for ($i = 1; $i <= 10; $i++) {
@@ -41,10 +41,10 @@ class ProductFixtures extends Fixture implements DependentFixtureInterface
                 $manager->persist($product);
             }
         }
-        
+
         $manager->flush();
     }
-    
+
     /**
      * @inheritDoc
      */
@@ -52,7 +52,7 @@ class ProductFixtures extends Fixture implements DependentFixtureInterface
     {
         return [AppFixtures::class];
     }
-    
+
     /**
      * @return UploadedFile
      */
@@ -63,7 +63,7 @@ class ProductFixtures extends Fixture implements DependentFixtureInterface
             __DIR__ . '/../../public/uploads/image.png',
             __DIR__ . '/../../public/uploads/' . $filename
         );
-        
+
         return new UploadedFile(
             __DIR__ . '/../../public/uploads/' . $filename,
             $filename,

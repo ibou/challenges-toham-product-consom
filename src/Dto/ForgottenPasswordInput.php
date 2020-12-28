@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Dto;
 
 use App\Validator\EmailExists;

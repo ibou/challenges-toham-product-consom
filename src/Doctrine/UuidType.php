@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Doctrine;
 
 use Doctrine\DBAL\Platforms\AbstractPlatform;
@@ -46,13 +45,12 @@ class UuidType extends GuidType
         if ($value instanceof Uuid
             || (
                 (is_string($value)
-
                     || method_exists($value, '__toString'))
                 && Uuid::isValid($value)
-            )) {
-            return (string) $value;
+            )
+        ) {
+            return (string)$value;
         }
-
         throw ConversionException::conversionFailed($value, static::NAME);
     }
 }
