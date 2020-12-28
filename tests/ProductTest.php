@@ -126,4 +126,42 @@ class ProductTest extends WebTestCase
         $client->submit($form);
         $this->assertResponseStatusCodeSame(Response::HTTP_FOUND);
     }
+    
+    public function testSuccessfulProductStock(): void
+    {
+        $client = static::createAuthenticatedClient("producer@gmail.com");
+        
+        /** @var RouterInterface $router */
+        $router = $client->getContainer()->get("router");
+        
+        /** @var EntityManagerInterface $entityManager */
+        $entityManager = $client->getContainer()->get("doctrine.orm.entity_manager");
+        
+        $producer = $entityManager->getRepository(Producer::class)->findOneByEmail("producer@gmail.com");
+        
+        $farm = $entityManager->getRepository(Farm::class)->findOneByProducer($producer);
+        
+        $product = $entityManager->getRepository(Product::class)->findOneByFarm($farm);
+        
+        $crawler = $client->request(
+            Request::METHOD_GET,
+            $router->generate(
+                "product_stock",
+                [
+                    "id" => (string) $product->getId(),
+                ]
+            )
+        );
+        
+        
+        $form = $crawler->filter("form[name=stock]")
+            ->form(
+                [
+                    "stock[quantity]" => 21,
+                ]
+            );
+        
+        $client->submit($form);
+        $this->assertResponseStatusCodeSame(Response::HTTP_FOUND);
+    }
 }

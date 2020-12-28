@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-namespace App\Controller;
-
 use App\Dto\ForgottenPasswordInput;
 use App\Entity\Customer;
 use App\Entity\Producer;
@@ -30,7 +28,7 @@ use Symfony\Component\Uid\Uuid;
  */
 class SecurityController extends AbstractController
 {
-    
+
     /**
      * @param string $role
      * @param Request $request
@@ -43,23 +41,23 @@ class SecurityController extends AbstractController
         Request $request,
         UserPasswordEncoderInterface $userPasswordEncoder
     ): Response {
-        $user = Producer::ROLE === $role ? new Producer : new Customer;
+        $user = Producer::ROLE === $role ? new Producer() : new Customer();
         $form = $this->createForm(RegistrationType::class, $user)->handleRequest($request);
-        
-        
+
+
         if ($form->isSubmitted() && $form->isValid()) {
             $user->setPassword(
                 $userPasswordEncoder->encodePassword($user, $user->getPlainPassword())
             );
-            
+
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($user);
             $entityManager->flush();
             $this->addFlash('success', 'Votre inscription est validée avec succès !');
-            
+
             return $this->redirectToRoute('index');
         }
-        
+
         return $this->render(
             'ui/security/registration.html.twig',
             [
@@ -67,7 +65,7 @@ class SecurityController extends AbstractController
             ]
         );
     }
-    
+
     /**
      * @Route("/login", name="security_login")
      * @param AuthenticationUtils $authenticationUtils
@@ -83,7 +81,7 @@ class SecurityController extends AbstractController
             ]
         );
     }
-    
+
     /**
      * @codeCoverageIgnore
      * @Route("/logout", name="security_logout")
@@ -91,7 +89,7 @@ class SecurityController extends AbstractController
     public function logout(): void
     {
     }
-    
+
     /**
      * @Route("/forgotten-password", name="security_forgotten_password")
      * @param Request $request
@@ -106,32 +104,32 @@ class SecurityController extends AbstractController
     ): Response {
         $forgottenPasswordInput = new ForgottenPasswordInput();
         $form = $this->createForm(ForgottenPasswordType::class, $forgottenPasswordInput)->handleRequest($request);
-        
+
         if ($form->isSubmitted() && $form->isValid()) {
             $user = $userRepository->findOneByEmail($forgottenPasswordInput->getEmail());
             /**@var User $user */
             $user->hasForgotHisPassword();
             $this->getDoctrine()->getManager()->flush();
-            
-            
+
+
             $email = (new TemplatedEmail())
                 ->to("hello@productconsumer.com")
                 ->from("ibrah@gmail.com")
                 ->context(["forgottenPassword" => $user->getForgottenPassword()])
                 ->htmlTemplate("emails/forgotten_password.html.twig");
-            
+
             $mailer->send($email);
-            
-            
+
+
             $this->addFlash(
                 "success",
                 "Votre demande d'oubli de mot de passe a bien été enregistrée. 
                 Vous allez recevoir un email pour réinitialiser votre mot de passe"
             );
-            
+
             return $this->redirectToRoute('security_login');
         }
-        
+
         return $this->render(
             'ui/security/forgotten_password.html.twig',
             [
@@ -139,7 +137,7 @@ class SecurityController extends AbstractController
             ]
         );
     }
-    
+
     /**
      * @Route("/reset-password/{token}", name="security_reset_password")
      * @param string $token
@@ -159,13 +157,13 @@ class SecurityController extends AbstractController
         $user = $userRepository->getUserByForgottenPass(Uuid::fromString($token));
         if (null === $user) {
             $this->addFlash("danger", "Cette demande d'oubli de mot de passe n'existe pas.");
-            
+
             return $this->redirectToRoute("security_login");
         }
-        
+
         $form = $this->createForm(ResetPasswordType::class, $user)->handleRequest($request);
-    
-    
+
+
         if ($form->isSubmitted() && $form->isValid()) {
             $user->setPassword(
                 $userPasswordEncoder->encodePassword($user, $user->getPlainPassword())
@@ -177,7 +175,7 @@ class SecurityController extends AbstractController
             );
             return $this->redirectToRoute("security_login");
         }
-    
+
         return $this->render("ui/security/reset_password.html.twig", [
             "form" => $form->createView()
         ]);

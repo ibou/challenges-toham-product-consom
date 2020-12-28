@@ -14,7 +14,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Product
 {
-    
+
     /**
      * @ORM\Id
      * @ORM\Column(type="uuid")
@@ -22,38 +22,38 @@ class Product
      * @ORM\CustomIdGenerator(class=UuidGenerator::class)
      */
     private UuidInterface $id;
-    
+
     /**
      * @ORM\Column
      * @Assert\NotBlank
      */
     private string $name = "";
-    
+
     /**
      * @ORM\Column(type="text")
      * @Assert\NotBlank
      */
     private string $description = "";
-    
+
     /**
      * @ORM\Column(type="integer")
      * @Assert\NotBlank
      * @Assert\GreaterThanOrEqual(0)
      */
     private int $quantity = 0;
-    
+
     /**
      * @ORM\ManyToOne(targetEntity="Farm")
      * @ORM\JoinColumn(onDelete="CASCADE", nullable=false)
      */
     private Farm $farm;
-    
+
     /**
      * @ORM\Embedded(class="Price")
      * @Assert\Valid
      */
     private Price $price;
-    
+
     /**
      * @return Uuid
      */
@@ -61,7 +61,7 @@ class Product
     {
         return $this->id;
     }
-    
+
     /**
      * @return string
      */
@@ -69,7 +69,7 @@ class Product
     {
         return $this->name;
     }
-    
+
     /**
      * @param string $name
      */
@@ -77,7 +77,7 @@ class Product
     {
         $this->name = $name;
     }
-    
+
     /**
      * @return string
      */
@@ -85,7 +85,7 @@ class Product
     {
         return $this->description;
     }
-    
+
     /**
      * @param string $description
      */
@@ -93,7 +93,7 @@ class Product
     {
         $this->description = $description;
     }
-    
+
     /**
      * @return int
      */
@@ -101,7 +101,7 @@ class Product
     {
         return $this->quantity;
     }
-    
+
     /**
      * @param int $quantity
      */
@@ -109,7 +109,7 @@ class Product
     {
         $this->quantity = $quantity;
     }
-    
+
     /**
      * @return Farm
      */
@@ -117,7 +117,7 @@ class Product
     {
         return $this->farm;
     }
-    
+
     /**
      * @param Farm $farm
      */
@@ -125,7 +125,7 @@ class Product
     {
         $this->farm = $farm;
     }
-    
+
     /**
      * @return Price
      */
@@ -133,7 +133,7 @@ class Product
     {
         return $this->price;
     }
-    
+
     /**
      * @param Price $price
      */

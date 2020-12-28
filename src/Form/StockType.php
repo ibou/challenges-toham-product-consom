@@ -2,25 +2,25 @@
 
 namespace App\Form;
 
-use App\Entity\User;
+use App\Entity\Product;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Class ResetPasswordType
+ * Class StockType
  * @package App\Form
  */
-class ResetPasswordType extends AbstractType
+class StockType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add("plainPassword", PasswordType::class);
+        $builder->add("quantity", NumberType::class);
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefault("data_class", User::class);
+        $resolver->setDefault("data_class", Product::class);
     }
 }
