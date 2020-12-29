@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class Producer
@@ -17,10 +16,9 @@ class Producer extends User
     public const ROLE = "producer";
 
     /**
-     * @ORM\OneToOne(targetEntity="Farm", cascade={"persist","remove"}, inversedBy="producer")
-     * @Assert\Valid
+     * @ORM\OneToOne(targetEntity="Farm", cascade={"persist"}, inversedBy="producer")
      */
-    private ?Farm $farm;
+    private Farm $farm;
 
     public function __construct()
     {

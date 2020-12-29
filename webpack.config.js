@@ -1,5 +1,6 @@
 var Encore = require('@symfony/webpack-encore');
-
+let dotenv = require ("dotenv");
+let fs = require('fs');
 // Manually configure the runtime environment if not already configured yet by the "encore" command.
 // It's useful when you use tools that rely on webpack.config.js file.
 if (!Encore.isRuntimeEnvironmentConfigured()) {
@@ -24,6 +25,7 @@ Encore
      * and one CSS file (e.g. app.scss) if your JavaScript imports CSS.
      */
     .addEntry('app', './assets/app.js')
+    .addEntry('update_farm', './assets/update_farm.js')
     //.addEntry('page1', './assets/page1.js')
     //.addEntry('page2', './assets/page2.js')
 
@@ -53,22 +55,28 @@ Encore
         config.corejs = 3;
     })
 
-// enables Sass/SCSS support
-.enableSassLoader()
+    // enables Sass/SCSS support
+    .enableSassLoader()
 
-// uncomment if you use TypeScript
-//.enableTypeScriptLoader()
+    // uncomment if you use TypeScript
+    //.enableTypeScriptLoader()
 
-// uncomment to get integrity="..." attributes on your script & link tags
-// requires WebpackEncoreBundle 1.4 or higher
-//.enableIntegrityHashes(Encore.isProduction())
+    // uncomment to get integrity="..." attributes on your script & link tags
+    // requires WebpackEncoreBundle 1.4 or higher
+    //.enableIntegrityHashes(Encore.isProduction())
 
-// uncomment if you're having problems with a jQuery plugin
-//.autoProvidejQuery()
+    // uncomment if you're having problems with a jQuery plugin
+    .autoProvidejQuery()
 
-// uncomment if you use API Platform Admin (composer req api-admin)
-//.enableReactPreset()
-//.addEntry('admin', './assets/admin.js')
+    // uncomment if you use API Platform Admin (composer req api-admin)
+    //.enableReactPreset()
+    //.addEntry('admin', './assets/admin.js')
+    .configureDefinePlugin(options => {
+        if (typeof process.env.GOOGLE_MAP_API_KEY === "undefined") {
+            const envConfig = dotenv.parse(fs.readFileSync('process.env'));
+            options['process.env'].GOOGLE_MAP_API_KEY = "'" + envConfig.GOOGLE_MAP_API_KEY + "'";
+        }
+    })
 ;
 
 module.exports = Encore.getWebpackConfig();

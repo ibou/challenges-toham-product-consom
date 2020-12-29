@@ -6,11 +6,10 @@ namespace App\Entity;
 
 use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
-use Ramsey\Uuid\Doctrine\UuidGenerator;
-use Ramsey\Uuid\UuidInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Uid\Uuid;
 
 /**
  * Class User
@@ -18,40 +17,38 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity
  * @ORM\InheritanceType("SINGLE_TABLE")
  * @ORM\DiscriminatorColumn(name="discr", type="string")
- * @ORM\DiscriminatorMap({"producer"="Producer", "customer"="Customer"})
+ * @ORM\DiscriminatorMap({"producer"="App\Entity\Producer", "customer"="App\Entity\Customer"})
  * @UniqueEntity("email")
  */
 abstract class User implements UserInterface
 {
-
     /**
      * @ORM\Id
      * @ORM\Column(type="uuid")
-     * @ORM\GeneratedValue(strategy="CUSTOM")
-     * @ORM\CustomIdGenerator(class=UuidGenerator::class)
      */
-    protected UuidInterface $id;
+    protected Uuid $id;
 
     /**
-     * @ORM\Column(type="string")
-     * @Assert\NotBlank()
+     * @ORM\Column
+     * @Assert\NotBlank
      */
     protected string $firstName = "";
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column
      * @Assert\NotBlank
      */
     protected string $lastName = "";
+
     /**
-     * @ORM\Column(type="string",unique=true)
+     * @ORM\Column(unique=true)
      * @Assert\NotBlank
      * @Assert\Email
      */
     protected string $email = "";
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column
      */
     protected string $password = "";
 
@@ -60,7 +57,6 @@ abstract class User implements UserInterface
      * @Assert\Length(min=3)
      */
     protected ?string $plainPassword = null;
-
 
     /**
      * @ORM\Column(type="datetime_immutable")
@@ -72,21 +68,29 @@ abstract class User implements UserInterface
      */
     protected ?ForgottenPassword $forgottenPassword;
 
-
+    /**
+     * User constructor.
+     */
     public function __construct()
     {
         $this->registeredAt = new DateTimeImmutable();
     }
 
-
     /**
-     * @return UuidInterface
+     * @return Uuid
      */
-    public function getId(): UuidInterface
+    public function getId(): Uuid
     {
         return $this->id;
     }
 
+    /**
+     * @param Uuid $id
+     */
+    public function setId(Uuid $id): void
+    {
+        $this->id = $id;
+    }
 
     /**
      * @return string
@@ -98,13 +102,10 @@ abstract class User implements UserInterface
 
     /**
      * @param string $firstName
-     * @return User
      */
-    public function setFirstName(string $firstName): User
+    public function setFirstName(string $firstName): void
     {
         $this->firstName = $firstName;
-
-        return $this;
     }
 
     /**
@@ -117,13 +118,10 @@ abstract class User implements UserInterface
 
     /**
      * @param string $lastName
-     * @return User
      */
-    public function setLastName(string $lastName): User
+    public function setLastName(string $lastName): void
     {
         $this->lastName = $lastName;
-
-        return $this;
     }
 
     /**
@@ -136,13 +134,10 @@ abstract class User implements UserInterface
 
     /**
      * @param string $email
-     * @return User
      */
-    public function setEmail(string $email): User
+    public function setEmail(string $email): void
     {
         $this->email = $email;
-
-        return $this;
     }
 
     /**
@@ -151,19 +146,15 @@ abstract class User implements UserInterface
     public function getPassword(): string
     {
         return $this->password;
-        $this->forgottenPassword = null;
     }
 
     /**
      * @param string $password
-     * @return User
      */
-    public function setPassword(string $password): User
+    public function setPassword(string $password): void
     {
         $this->forgottenPassword = null;
         $this->password = $password;
-
-        return $this;
     }
 
     /**
@@ -176,13 +167,10 @@ abstract class User implements UserInterface
 
     /**
      * @param string|null $plainPassword
-     * @return User
      */
-    public function setPlainPassword(?string $plainPassword): User
+    public function setPlainPassword(?string $plainPassword): void
     {
         $this->plainPassword = $plainPassword;
-
-        return $this;
     }
 
     /**
@@ -195,15 +183,11 @@ abstract class User implements UserInterface
 
     /**
      * @param DateTimeImmutable $registeredAt
-     * @return User
      */
-    public function setRegisteredAt(DateTimeImmutable $registeredAt): User
+    public function setRegisteredAt(DateTimeImmutable $registeredAt): void
     {
         $this->registeredAt = $registeredAt;
-
-        return $this;
     }
-
 
     public function getSalt(): void
     {
@@ -222,6 +206,11 @@ abstract class User implements UserInterface
         $this->plainPassword = null;
     }
 
+    public function hasForgotHisPassword(): void
+    {
+        $this->forgottenPassword = new ForgottenPassword();
+    }
+
     /**
      * @return ForgottenPassword|null
      */
@@ -230,12 +219,10 @@ abstract class User implements UserInterface
         return $this->forgottenPassword;
     }
 
-    public function hasForgotHisPassword(): void
-    {
-        $this->forgottenPassword = new ForgottenPassword();
-    }
-
-    public function getFullName()
+    /**
+     * @return string
+     */
+    public function getFullName(): string
     {
         return sprintf("%s %s", $this->firstName, $this->lastName);
     }

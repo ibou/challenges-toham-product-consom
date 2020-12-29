@@ -3,8 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Ramsey\Uuid\Doctrine\UuidGenerator;
-use Ramsey\Uuid\UuidInterface;
+use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -18,10 +17,8 @@ class Product
     /**
      * @ORM\Id
      * @ORM\Column(type="uuid")
-     * @ORM\GeneratedValue(strategy="CUSTOM")
-     * @ORM\CustomIdGenerator(class=UuidGenerator::class)
      */
-    private UuidInterface $id;
+    private Uuid $id;
 
     /**
      * @ORM\Column
@@ -52,14 +49,22 @@ class Product
      * @ORM\Embedded(class="Price")
      * @Assert\Valid
      */
-    private Price $price;
+    private ?Price $price = null;
 
     /**
-     * @return Uuid
-     */
-    public function getId(): UuidInterface
+      * @return Uuid
+      */
+    public function getId(): Uuid
     {
         return $this->id;
+    }
+
+    /**
+     * @param Uuid $id
+     */
+    public function setId(Uuid $id): void
+    {
+        $this->id = $id;
     }
 
     /**
@@ -125,20 +130,23 @@ class Product
     {
         $this->farm = $farm;
     }
-
+    
     /**
-     * @return Price
+     * @return Price|null
      */
-    public function getPrice(): Price
+    public function getPrice(): ?Price
     {
         return $this->price;
     }
-
+    
     /**
-     * @param Price $price
+     * @param Price|null $price
+     * @return Product
      */
-    public function setPrice(Price $price): void
+    public function setPrice(?Price $price): Product
     {
         $this->price = $price;
+        
+        return $this;
     }
 }

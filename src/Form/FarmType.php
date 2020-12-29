@@ -27,6 +27,9 @@ class FarmType extends AbstractType
                 "label" => "Nom de votre exploitation",
                 "empty_data" => ""
             ])
+            ->add('address', AddressType::class, [
+                'label'=> false
+            ])
             ->add("description", TextareaType::class, [
                 "label" => "Présentation de votre exploitation"
             ]);
