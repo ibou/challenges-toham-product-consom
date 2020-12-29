@@ -12,6 +12,9 @@
                 <div class="card-body">
                     {{ form_rest(form) }}
                 </div>
+                <div class="card-body">
+                    <div id="map"></div>
+                </div>
                 <div class="card-footer">
                     <button class="btn btn-block btn-primary">Modifier</button>
                     <a href="{{ path("product_delete", { id: form.vars.data.id }) }}" class="btn btn-block btn-outline-danger">Supprimer</a>

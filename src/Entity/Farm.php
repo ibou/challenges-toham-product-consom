@@ -1,13 +1,12 @@
 <?php
 
-declare(strict_types=1);
-
 namespace App\Entity;
 
-use Ramsey\Uuid\UuidInterface;
 use Doctrine\ORM\Mapping as ORM;
-use Ramsey\Uuid\Doctrine\UuidGenerator;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Uid\Uuid;
+
+use Ramsey\Uuid\Doctrine\UuidGenerator;
 
 /**
  * Class Farm
@@ -17,20 +16,24 @@ use Symfony\Component\Validator\Constraints as Assert;
 class Farm
 {
     /**
+     * @var \Ramsey\Uuid\UuidInterface
+     *
      * @ORM\Id
-     * @ORM\Column(type="uuid")
+     * @ORM\Column(type="uuid", unique=true)
      * @ORM\GeneratedValue(strategy="CUSTOM")
      * @ORM\CustomIdGenerator(class=UuidGenerator::class)
      */
-    private ?UuidInterface $id = null;
+    private Uuid $id;
 
     /**
      * @ORM\Column(nullable=true)
+     * @Assert\NotBlank
      */
-    private string $name = "";
+    private ?string $name = null;
 
     /**
      * @ORM\Column(nullable=true, type="text")
+     * @Assert\NotBlank
      */
     private ?string $description = null;
 
@@ -40,27 +43,40 @@ class Farm
      */
     private Producer $producer;
 
+    /**
+     * @ORM\Embedded(class="Address")
+     * @Assert\Valid
+     */
+    private ?Address $address = null;
 
     /**
-     * @return UuidInterface|null
+     * @return Uuid
      */
-    public function getId(): ?UuidInterface
+    public function getId(): Uuid
     {
         return $this->id;
     }
 
     /**
-     * @return string
+     * @param Uuid $id
      */
-    public function getName(): string
+    public function setId(Uuid $id): void
+    {
+        $this->id = $id;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getName(): ?string
     {
         return $this->name;
     }
 
     /**
-     * @param string $name
+     * @param string|null $name
      */
-    public function setName(string $name): void
+    public function setName(?string $name): void
     {
         $this->name = $name;
     }
@@ -95,5 +111,21 @@ class Farm
     public function setProducer(Producer $producer): void
     {
         $this->producer = $producer;
+    }
+
+    /**
+     * @return Address|null
+     */
+    public function getAddress(): ?Address
+    {
+        return $this->address;
+    }
+
+    /**
+     * @param Address|null $address
+     */
+    public function setAddress(?Address $address): void
+    {
+        $this->address = $address;
     }
 }

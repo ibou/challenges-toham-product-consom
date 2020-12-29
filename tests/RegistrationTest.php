@@ -35,7 +35,7 @@ class RegistrationTest extends WebTestCase
 
         $form = $crawler->filter("form[name=registration]")
             ->form([
-                "registration[email]" => "email@email.com",
+                "registration[email]" => "email@gmail.com",
                 "registration[plainPassword]" => "dev123",
                 "registration[firstName]" => "firstName tester John",
                 "registration[lastName]" => "lastName tester W."

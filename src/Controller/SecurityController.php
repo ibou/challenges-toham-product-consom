@@ -42,6 +42,7 @@ class SecurityController extends AbstractController
         UserPasswordEncoderInterface $userPasswordEncoder
     ): Response {
         $user = Producer::ROLE === $role ? new Producer() : new Customer();
+        $user->setId(Uuid::v4());
         $form = $this->createForm(RegistrationType::class, $user)->handleRequest($request);
 
 
@@ -54,7 +55,7 @@ class SecurityController extends AbstractController
             $entityManager->persist($user);
             $entityManager->flush();
             $this->addFlash('success', 'Votre inscription est validée avec succès !');
-
+ 
             return $this->redirectToRoute('index');
         }
 
