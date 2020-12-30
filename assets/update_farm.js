@@ -5,8 +5,8 @@ class Map
     constructor()
     {
         this.center = {
-            lat: 48.441049,
-            lng: 1.546233
+            lat: 40.74831040983947,
+            lng: -73.98561076041806
         };
         this.map = null;
         this.marker = null;

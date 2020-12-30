@@ -149,4 +149,12 @@ class Product
         
         return $this;
     }
+    
+    /**
+     * @return float
+     */
+    public function priceIncludingTaxes(): float
+    {
+        return ($this->price->getUnitPrice() * $this->price->getVat()) / 100;
+    }
 }

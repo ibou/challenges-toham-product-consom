@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -15,15 +16,17 @@ class Position
     /**
      * @ORM\Column(type="decimal", precision=16, scale=13, nullable=true)
      * @Assert\NotBlank
+     * @Groups({"read"})
      */
     private ?float $latitude = null;
-
+    
     /**
      * @ORM\Column(type="decimal", precision=16, scale=13, nullable=true)
      * @Assert\NotBlank
+     * @Groups({"read"})
      */
     private ?float $longitude = null;
-
+    
     /**
      * @return float|null
      */
@@ -31,7 +34,7 @@ class Position
     {
         return $this->latitude;
     }
-
+    
     /**
      * @param float|null $latitude
      */
@@ -39,7 +42,7 @@ class Position
     {
         $this->latitude = $latitude;
     }
-
+    
     /**
      * @return float|null
      */
@@ -47,7 +50,7 @@ class Position
     {
         return $this->longitude;
     }
-
+    
     /**
      * @param float|null $longitude
      */
