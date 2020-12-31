@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Uid\Uuid;
 
 /**
  * Class Producer
@@ -24,6 +25,7 @@ class Producer extends User
     {
         parent::__construct();
         $this->farm = new Farm();
+        $this->farm->setId(Uuid::v4());
         $this->farm->setProducer($this);
     }
 

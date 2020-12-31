@@ -7,8 +7,6 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Uid\Uuid;
 
-use Ramsey\Uuid\Doctrine\UuidGenerator;
-
 /**
  * Class Farm
  * @package App\Entity
@@ -17,42 +15,38 @@ use Ramsey\Uuid\Doctrine\UuidGenerator;
 class Farm
 {
     /**
-     * @var \Ramsey\Uuid\UuidInterface
-     *
      * @ORM\Id
-     * @ORM\Column(type="uuid", unique=true)
-     * @ORM\GeneratedValue(strategy="CUSTOM")
-     * @ORM\CustomIdGenerator(class=UuidGenerator::class)
+     * @ORM\Column(type="uuid")
      * @Groups({"read"})
      */
     private Uuid $id;
-    
+
     /**
      * @ORM\Column(nullable=true)
      * @Assert\NotBlank
      * @Groups({"read"})
      */
     private ?string $name = null;
-    
+
     /**
      * @ORM\Column(nullable=true, type="text")
      * @Assert\NotBlank
      * @Groups({"read"})
      */
     private ?string $description = null;
-    
+
     /**
      * @ORM\OneToOne(targetEntity="Producer", mappedBy="farm")
      * @ORM\JoinColumn(onDelete="CASCADE")
      */
     private Producer $producer;
-    
+
     /**
      * @ORM\Embedded(class="Address")
      * @Assert\Valid
      */
     private ?Address $address = null;
-    
+
     /**
      * @return Uuid|null
      */
@@ -60,7 +54,7 @@ class Farm
     {
         return $this->id;
     }
-    
+
     /**
      * @param Uuid $id
      */
@@ -68,7 +62,7 @@ class Farm
     {
         $this->id = $id;
     }
-    
+
     /**
      * @return string|null
      */
@@ -76,7 +70,7 @@ class Farm
     {
         return $this->name;
     }
-    
+
     /**
      * @param string|null $name
      */
@@ -84,7 +78,7 @@ class Farm
     {
         $this->name = $name;
     }
-    
+
     /**
      * @return string|null
      */
@@ -92,7 +86,7 @@ class Farm
     {
         return $this->description;
     }
-    
+
     /**
      * @param string|null $description
      */
@@ -100,7 +94,7 @@ class Farm
     {
         $this->description = $description;
     }
-    
+
     /**
      * @return Producer
      */
@@ -108,7 +102,7 @@ class Farm
     {
         return $this->producer;
     }
-    
+
     /**
      * @param Producer $producer
      */
@@ -116,7 +110,7 @@ class Farm
     {
         $this->producer = $producer;
     }
-    
+
     /**
      * @return Address|null
      */
@@ -124,7 +118,7 @@ class Farm
     {
         return $this->address;
     }
-    
+
     /**
      * @param Address|null $address
      */

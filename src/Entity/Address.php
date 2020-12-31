@@ -19,13 +19,13 @@ class Address
      * @Groups({"read"})
      */
     private ?string $address = null;
-    
+
     /**
      * @ORM\Column(nullable=true)
      * @Groups({"read"})
      */
     private ?string $restAddress = null;
-    
+
     /**
      * @ORM\Column(length=5, nullable=true)
      * @Assert\NotBlank
@@ -33,21 +33,21 @@ class Address
      * @Groups({"read"})
      */
     private ?string $zipCode = null;
-    
+
     /**
      * @ORM\Column(nullable=true)
      * @Assert\NotBlank
      * @Groups({"read"})
      */
     private ?string $city = null;
-    
+
     /**
      * @ORM\Embedded(class="Position")
      * @Assert\Valid
      * @Groups({"read"})
      */
     private ?Position $position = null;
-    
+
     /**
      * @return string|null
      */
@@ -55,7 +55,7 @@ class Address
     {
         return $this->address;
     }
-    
+
     /**
      * @param string|null $address
      */
@@ -63,7 +63,7 @@ class Address
     {
         $this->address = $address;
     }
-    
+
     /**
      * @return string|null
      */
@@ -71,7 +71,7 @@ class Address
     {
         return $this->restAddress;
     }
-    
+
     /**
      * @param string|null $restAddress
      */
@@ -79,7 +79,7 @@ class Address
     {
         $this->restAddress = $restAddress;
     }
-    
+
     /**
      * @return string|null
      */
@@ -87,7 +87,7 @@ class Address
     {
         return $this->zipCode;
     }
-    
+
     /**
      * @param string|null $zipCode
      */
@@ -95,7 +95,7 @@ class Address
     {
         $this->zipCode = $zipCode;
     }
-    
+
     /**
      * @return string|null
      */
@@ -103,7 +103,7 @@ class Address
     {
         return $this->city;
     }
-    
+
     /**
      * @param string|null $city
      */
@@ -111,7 +111,7 @@ class Address
     {
         $this->city = $city;
     }
-    
+
     /**
      * @return Position|null
      */
@@ -119,7 +119,7 @@ class Address
     {
         return $this->position;
     }
-    
+
     /**
      * @param Position|null $position
      */
