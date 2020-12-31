@@ -6,8 +6,8 @@ use App\Entity\Customer;
 use App\Entity\Producer;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
-use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\Uid\Uuid;
 
 /**
  * Class UserFixtures

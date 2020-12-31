@@ -43,7 +43,13 @@ class SecurityController extends AbstractController
     ): Response {
         $user = Producer::ROLE === $role ? new Producer() : new Customer();
         $user->setId(Uuid::v4());
-        $form = $this->createForm(RegistrationType::class, $user)->handleRequest($request);
+        $form = $this->createForm(
+            RegistrationType::class,
+            $user,
+            [
+                "validation_groups" => ["Default","password"],
+            ]
+        )->handleRequest($request);
 
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -55,7 +61,7 @@ class SecurityController extends AbstractController
             $entityManager->persist($user);
             $entityManager->flush();
             $this->addFlash('success', 'Votre inscription est validée avec succès !');
- 
+
             return $this->redirectToRoute('index');
         }
 
@@ -162,7 +168,13 @@ class SecurityController extends AbstractController
             return $this->redirectToRoute("security_login");
         }
 
-        $form = $this->createForm(ResetPasswordType::class, $user)->handleRequest($request);
+        $form = $this->createForm(
+            ResetPasswordType::class,
+            $user,
+            [
+                "validation_groups" => ["password"],
+            ]
+        )->handleRequest($request);
 
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -174,11 +186,15 @@ class SecurityController extends AbstractController
                 "success",
                 "Votre mot de passe a été modifié avec succès."
             );
+
             return $this->redirectToRoute("security_login");
         }
 
-        return $this->render("ui/security/reset_password.html.twig", [
-            "form" => $form->createView()
-        ]);
+        return $this->render(
+            "ui/security/reset_password.html.twig",
+            [
+                "form" => $form->createView(),
+            ]
+        );
     }
 }

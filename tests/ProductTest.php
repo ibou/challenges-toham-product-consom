@@ -18,37 +18,37 @@ use Symfony\Component\Routing\RouterInterface;
 class ProductTest extends WebTestCase
 {
     use AuthenticationTrait;
-    
+
     public function testSuccessfulProductList(): void
     {
         $client = static::createAuthenticatedClient("producer@gmail.com");
-        
+
         /**
          * @var RouterInterface $router
          */
         $router = $client->getContainer()->get('router');
-        
+
         $client->request(Request::METHOD_GET, $router->generate('product_index'));
-        
+
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
     }
-    
+
     public function testSuccessfulProductUpdate(): void
     {
         $client = static::createAuthenticatedClient("producer@gmail.com");
-        
+
         /** @var RouterInterface $router */
         $router = $client->getContainer()->get("router");
-        
+
         /** @var EntityManagerInterface $entityManager */
         $entityManager = $client->getContainer()->get("doctrine.orm.entity_manager");
-        
+
         $producer = $entityManager->getRepository(Producer::class)->findOneByEmail("producer@gmail.com");
-        
+
         $farm = $entityManager->getRepository(Farm::class)->findOneByProducer($producer);
-        
+
         $product = $entityManager->getRepository(Product::class)->findOneByFarm($farm);
-        
+
         $crawler = $client->request(
             Request::METHOD_GET,
             $router->generate(
@@ -58,7 +58,7 @@ class ProductTest extends WebTestCase
                 ]
             )
         );
-        
+
         $form = $crawler->filter("form[name=product]")->form(
             [
                 "product[name]" => "Produit",
@@ -67,28 +67,28 @@ class ProductTest extends WebTestCase
                 "product[price][vat]" => 2.1,
             ]
         );
-        
+
         $client->submit($form);
-        
+
         $this->assertResponseStatusCodeSame(Response::HTTP_FOUND);
     }
-    
+
     public function testSuccessfulProductDelete(): void
     {
         $client = static::createAuthenticatedClient("producer@gmail.com");
-        
+
         /** @var RouterInterface $router */
         $router = $client->getContainer()->get("router");
-        
+
         /** @var EntityManagerInterface $entityManager */
         $entityManager = $client->getContainer()->get("doctrine.orm.entity_manager");
-        
+
         $producer = $entityManager->getRepository(Producer::class)->findOneByEmail("producer@gmail.com");
-        
+
         $farm = $entityManager->getRepository(Farm::class)->findOneByProducer($producer);
-        
+
         $product = $entityManager->getRepository(Product::class)->findOneByFarm($farm);
-        
+
         $client->request(
             Request::METHOD_GET,
             $router->generate(
@@ -100,19 +100,19 @@ class ProductTest extends WebTestCase
         );
         $this->assertResponseStatusCodeSame(Response::HTTP_FOUND);
     }
-    
-    
+
+
     public function testSuccessfulProductCreate(): void
     {
         $client = static::createAuthenticatedClient("producer@gmail.com");
-        
+
         /**
          * @var RouterInterface $router
          */
         $router = $client->getContainer()->get('router');
-        
+
         $crawler = $client->request(Request::METHOD_GET, $router->generate('product_create'));
-        
+
         $form = $crawler->filter("form[name=product]")
             ->form(
                 [
@@ -122,27 +122,27 @@ class ProductTest extends WebTestCase
                     "product[price][vat]" => 2.1,
                 ]
             );
-        
+
         $client->submit($form);
         $this->assertResponseStatusCodeSame(Response::HTTP_FOUND);
     }
-    
+
     public function testSuccessfulProductStock(): void
     {
         $client = static::createAuthenticatedClient("producer@gmail.com");
-        
+
         /** @var RouterInterface $router */
         $router = $client->getContainer()->get("router");
-        
+
         /** @var EntityManagerInterface $entityManager */
         $entityManager = $client->getContainer()->get("doctrine.orm.entity_manager");
-        
+
         $producer = $entityManager->getRepository(Producer::class)->findOneByEmail("producer@gmail.com");
-        
+
         $farm = $entityManager->getRepository(Farm::class)->findOneByProducer($producer);
-        
+
         $product = $entityManager->getRepository(Product::class)->findOneByFarm($farm);
-        
+
         $crawler = $client->request(
             Request::METHOD_GET,
             $router->generate(
@@ -152,15 +152,15 @@ class ProductTest extends WebTestCase
                 ]
             )
         );
-        
-        
+
+
         $form = $crawler->filter("form[name=stock]")
             ->form(
                 [
                     "stock[quantity]" => 21,
                 ]
             );
-        
+
         $client->submit($form);
         $this->assertResponseStatusCodeSame(Response::HTTP_FOUND);
     }

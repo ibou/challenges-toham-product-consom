@@ -2,27 +2,26 @@
 
 namespace App\Form;
 
-use App\Entity\Position;
+use App\Entity\Customer;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Class PositionType
+ * Class CartType
  * @package App\Form
  */
-class PositionType extends AbstractType
+class CartType extends AbstractType
 {
     /**
      * @inheritDoc
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder
-            ->add("latitude", HiddenType::class)
-            ->add("longitude", HiddenType::class)
-        ;
+        $builder->add("cart", CollectionType::class, [
+            "entry_type" => CartItemType::class
+        ]);
     }
 
     /**
@@ -30,6 +29,6 @@ class PositionType extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefault("data_class", Position::class);
+        $resolver->setDefault("data_class", Customer::class);
     }
 }

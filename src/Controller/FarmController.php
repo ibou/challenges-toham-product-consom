@@ -3,11 +3,9 @@
 namespace App\Controller;
 
 use App\Entity\Farm;
-use App\Entity\Producer;
 use App\Form\FarmType;
 use App\Repository\FarmRepository;
 use App\Repository\ProductRepository;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -26,28 +24,30 @@ class FarmController extends AbstractController
 {
     /**
      * @param FarmRepository $farmRepository
+     * @param SerializerInterface $serializer
+     * @return JsonResponse
      * @Route("/all", name="farm_all")
      */
-    public function all(FarmRepository $farmRepository): JsonResponse
+    public function all(FarmRepository $farmRepository, SerializerInterface $serializer): JsonResponse
     {
-        return $this->json($farmRepository->findAll(), Response::HTTP_OK, [], ["groups" => "read"]);
+        $farms = $serializer->serialize($farmRepository->findAll(), 'json', ["groups" => "read"]);
+        return new JsonResponse($farms, JsonResponse::HTTP_OK, [], true);
     }
-    
+
     /**
+     * @param Farm $farm
      * @param ProductRepository $productRepository
      * @return Response
      * @Route("/{id}/show", name="farm_show")
      */
-    public function show(ProductRepository $productRepository): Response
+    public function show(Farm $farm, ProductRepository $productRepository): Response
     {
-        return $this->render(
-            "ui/farm/show.html.twig",
-            [
-                "products" => $productRepository->findByFarm($this->getUser()->getFarm()),
-            ]
-        );
+        return $this->render("ui/farm/show.html.twig", [
+            "farm" => $farm,
+            "products" => $productRepository->findByFarm($farm)
+        ]);
     }
-    
+
     /**
      * @param Request $request
      * @return Response
@@ -57,22 +57,18 @@ class FarmController extends AbstractController
     public function update(Request $request): Response
     {
         $form = $this->createForm(FarmType::class, $this->getUser()->getFarm())->handleRequest($request);
-        
+
         if ($form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
             $this->addFlash(
                 "success",
                 "Les informations de votre exploitation ont été modifiée avec succès."
             );
-            
             return $this->redirectToRoute("farm_update");
         }
-        
-        return $this->render(
-            "ui/farm/update.html.twig",
-            [
-                "form" => $form->createView(),
-            ]
-        );
+
+        return $this->render("ui/farm/update.html.twig", [
+            "form" => $form->createView()
+        ]);
     }
 }

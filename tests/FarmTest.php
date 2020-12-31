@@ -11,22 +11,22 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\RouterInterface;
 
 /**
- * Class UpdateFarmTest
+ * Class FarmTest
  * @package App\Tests
  */
-class UpdateFarmTest extends WebTestCase
+class FarmTest extends WebTestCase
 {
     use AuthenticationTrait;
-    
+
     public function testSuccessfulFarmUpdate(): void
     {
         $client = static::createAuthenticatedClient("producer@gmail.com");
-        
+
         /** @var RouterInterface $router */
         $router = $client->getContainer()->get("router");
-        
+
         $crawler = $client->request(Request::METHOD_GET, $router->generate("farm_update"));
-        
+
         $form = $crawler->filter("form[name=farm]")->form(
             [
                 "farm[name]" => "Exploitation",
@@ -38,25 +38,25 @@ class UpdateFarmTest extends WebTestCase
                 "farm[address][position][longitude]" => 7.5,
             ]
         );
-        
+
         $client->submit($form);
-        
+
         $this->assertResponseStatusCodeSame(Response::HTTP_FOUND);
     }
-    
-    
+
+
     public function testSuccessfulFarmShow(): void
     {
         $client = static::createAuthenticatedClient("producer@gmail.com");
-        
+
         /** @var RouterInterface $router */
         $router = $client->getContainer()->get("router");
-        
+
         /** @var EntityManagerInterface $entityManager */
         $entityManager = $client->getContainer()->get("doctrine.orm.entity_manager");
-        
+
         $farm = $entityManager->getRepository(Farm::class)->findOneBy([]);
-        
+
         $client->request(
             Request::METHOD_GET,
             $router->generate(
@@ -66,20 +66,20 @@ class UpdateFarmTest extends WebTestCase
                 ]
             )
         );
-        
+
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
     }
-    
-    
+
+
     public function testSuccessfulFarmAll(): void
     {
         $client = static::createAuthenticatedClient("producer@gmail.com");
-        
+
         /** @var RouterInterface $router */
         $router = $client->getContainer()->get("router");
-        
+
         $client->request(Request::METHOD_GET, $router->generate("farm_all"));
-        
+
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
     }
 }

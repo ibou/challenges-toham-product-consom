@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -50,6 +52,19 @@ class Product
      * @Assert\Valid
      */
     private ?Price $price = null;
+
+    /**
+     * @ORM\OneToMany(targetEntity=CartItem::class, mappedBy="product")
+     */
+    private $cartItems;
+
+
+
+    public function __construct()
+    {
+        $this->customer = new ArrayCollection();
+        $this->cartItems = new ArrayCollection();
+    }
 
     /**
       * @return Uuid
@@ -130,7 +145,7 @@ class Product
     {
         $this->farm = $farm;
     }
-    
+
     /**
      * @return Price|null
      */
@@ -138,7 +153,7 @@ class Product
     {
         return $this->price;
     }
-    
+
     /**
      * @param Price|null $price
      * @return Product
@@ -146,15 +161,45 @@ class Product
     public function setPrice(?Price $price): Product
     {
         $this->price = $price;
-        
+
         return $this;
     }
-    
+
     /**
      * @return float
      */
-    public function priceIncludingTaxes(): float
+    public function getPriceIncludingTaxes(): float
     {
         return ($this->price->getUnitPrice() * $this->price->getVat()) / 100;
+    }
+
+    /**
+     * @return Collection|CartItem[]
+     */
+    public function getCartItems(): Collection
+    {
+        return $this->cartItems;
+    }
+
+    public function addCartItem(CartItem $cartItem): self
+    {
+        if (!$this->cartItems->contains($cartItem)) {
+            $this->cartItems[] = $cartItem;
+            $cartItem->setProduct($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCartItem(CartItem $cartItem): self
+    {
+        if ($this->cartItems->removeElement($cartItem)) {
+            // set the owning side to null (unless already changed)
+            if ($cartItem->getProduct() === $this) {
+                $cartItem->setProduct(null);
+            }
+        }
+
+        return $this;
     }
 }
