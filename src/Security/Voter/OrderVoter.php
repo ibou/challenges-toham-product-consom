@@ -2,23 +2,28 @@
 
 namespace App\Security\Voter;
 
+use App\Entity\Customer;
 use App\Entity\Producer;
-use App\Entity\Product;
+use App\Entity\Order;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
-class ProductVoter extends Voter
+/**
+ * Class OrderVoter
+ * @package App\Security\Voter
+ */
+class OrderVoter extends Voter
 {
-    public const UPDATE = "update";
+    public const CANCEL = "cancel";
+    public const CREATED = "created";
 
-    public const DELETE = "delete";
 
     /**
      * @inheritDoc
      */
     protected function supports(string $attribute, $subject): bool
     {
-        return in_array($attribute, [self::UPDATE, self::DELETE]) && $subject instanceof Product;
+        return in_array($attribute, [self::CANCEL]) && $subject instanceof Order;
     }
 
     /**
@@ -27,10 +32,10 @@ class ProductVoter extends Voter
     protected function voteOnAttribute(string $attribute, $subject, TokenInterface $token): bool
     {
         $user = $token->getUser();
-        if (!$user instanceof Producer) {
+        if (!$user instanceof Customer) {
             return false;
         }
-        /** @var Product $subject */
-        return $subject->getFarm() === $user->getFarm();
+        /** @var Order $subject */
+        return $subject->getState() === self::CREATED;
     }
 }
