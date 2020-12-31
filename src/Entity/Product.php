@@ -62,7 +62,6 @@ class Product
 
     public function __construct()
     {
-        $this->customer = new ArrayCollection();
         $this->cartItems = new ArrayCollection();
     }
 
