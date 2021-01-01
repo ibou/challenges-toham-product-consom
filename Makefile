@@ -1,6 +1,6 @@
 analyze:
-	sh vendor/bin/phpcbf
-	sh vendor/bin/phpcs
+	php vendor/bin/phpcbf
+	php vendor/bin/phpcs
 
 .PHONY: tests vendor
 tests: vendor
