@@ -45,4 +45,50 @@ class LoginTest extends WebTestCase
         yield ['producer@gmail.com'];
         yield ['customer@gmail.com'];
     }
+
+    public function testInvalidCredentials(): void
+    {
+        $client = static::createClient();
+
+        /**
+         * @var RouterInterface $router
+         */
+        $router = $client->getContainer()->get('router');
+
+        $crawler = $client->request(Request::METHOD_GET, $router->generate('security_login'));
+
+        $form = $crawler->filter("form[name=login]")
+            ->form([
+                       "email" => 'producer@gmail.com',
+                       "password" => "fail",
+                   ]);
+
+        $client->submit($form);
+        $this->assertResponseStatusCodeSame(Response::HTTP_FOUND);
+        $client->followRedirect();
+        $this->assertSelectorTextContains("div.alert-danger", "Identifiants invalides.");
+    }
+
+    public function testInvalidCredentialsLikeEmail(): void
+    {
+        $client = static::createClient();
+
+        /**
+         * @var RouterInterface $router
+         */
+        $router = $client->getContainer()->get('router');
+
+        $crawler = $client->request(Request::METHOD_GET, $router->generate('security_login'));
+
+        $form = $crawler->filter("form[name=login]")
+            ->form([
+                       "email" => 'fail@gmail.com',
+                       "password" => "fail",
+                   ]);
+
+        $client->submit($form);
+        $this->assertResponseStatusCodeSame(Response::HTTP_FOUND);
+        $client->followRedirect();
+        $this->assertSelectorTextContains("div.alert-danger", "Email could not be found.");
+    }
 }

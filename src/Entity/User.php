@@ -20,7 +20,11 @@ use Symfony\Component\Uid\Uuid;
  * @ORM\InheritanceType("SINGLE_TABLE")
  * @ORM\DiscriminatorColumn(name="discr", type="string")
  * @ORM\DiscriminatorMap({"producer"="App\Entity\Producer", "customer"="App\Entity\Customer"})
- * @UniqueEntity("email")
+ * @UniqueEntity(
+ *     fields={"email"},
+ *     message="Il semble que cette adresse email soit déjà prise.",
+ *     entityClass="App\Entity\User"
+ * )
  */
 abstract class User implements UserInterface, \Serializable, EquatableInterface
 {
