@@ -11,6 +11,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Uid\Uuid;
 
 /**
  * Class ProductController
@@ -45,9 +46,11 @@ class ProductController extends AbstractController
     public function create(Request $request): Response
     {
         $product = new Product();
+        $product->setId(Uuid::v4());
         $form = $this->createForm(ProductType::class, $product)->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $this->getDoctrine()->getManager()->persist($product);
             $this->getDoctrine()->getManager()->flush();
             $this->addFlash(
                 "success",
