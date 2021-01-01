@@ -25,7 +25,11 @@ class ProductType extends AbstractType
             ->add("description", TextareaType::class, [
                 "label" => "Description",
                 "empty_data" => ""
-            ]);
+            ])
+            ->add('image', ImageType::class, [
+                "label"=>false
+            ])
+        ;
     }
     public function configureOptions(OptionsResolver $resolver)
     {

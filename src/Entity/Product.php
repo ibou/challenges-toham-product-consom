@@ -12,67 +12,63 @@ use Symfony\Component\Validator\Constraints as Assert;
  * Class Product
  * @package App\Entity
  * @ORM\Entity
+ * @ORM\EntityListeners({"App\EntityListener\ProductListener"})
  */
 class Product
 {
-
+    
     /**
      * @ORM\Id
      * @ORM\Column(type="uuid")
      */
     private Uuid $id;
-
+    
     /**
      * @ORM\Column
      * @Assert\NotBlank
      */
     private string $name = "";
-
+    
     /**
      * @ORM\Column(type="text")
      * @Assert\NotBlank
      */
     private string $description = "";
-
+    
     /**
      * @ORM\Column(type="integer")
      * @Assert\NotBlank
      * @Assert\GreaterThanOrEqual(0)
      */
     private int $quantity = 0;
-
+    
     /**
      * @ORM\ManyToOne(targetEntity="Farm")
      * @ORM\JoinColumn(onDelete="CASCADE", nullable=false)
      */
-    private Farm $farm;
-
+    private ?Farm $farm = null;
+    
     /**
      * @ORM\Embedded(class="Price")
      * @Assert\Valid
      */
     private ?Price $price = null;
-
+    
     /**
-     * @ORM\OneToMany(targetEntity=CartItem::class, mappedBy="product")
+     * @ORM\Embedded(class="Image")
+     * @Assert\Valid
      */
-    private $cartItems;
-
-
-
-    public function __construct()
-    {
-        $this->cartItems = new ArrayCollection();
-    }
-
+    private ?Image $image = null;
+    
+    
     /**
-      * @return Uuid
-      */
+     * @return Uuid
+     */
     public function getId(): Uuid
     {
         return $this->id;
     }
-
+    
     /**
      * @param Uuid $id
      */
@@ -80,7 +76,7 @@ class Product
     {
         $this->id = $id;
     }
-
+    
     /**
      * @return string
      */
@@ -88,7 +84,7 @@ class Product
     {
         return $this->name;
     }
-
+    
     /**
      * @param string $name
      */
@@ -96,7 +92,7 @@ class Product
     {
         $this->name = $name;
     }
-
+    
     /**
      * @return string
      */
@@ -104,7 +100,7 @@ class Product
     {
         return $this->description;
     }
-
+    
     /**
      * @param string $description
      */
@@ -112,7 +108,7 @@ class Product
     {
         $this->description = $description;
     }
-
+    
     /**
      * @return int
      */
@@ -120,7 +116,7 @@ class Product
     {
         return $this->quantity;
     }
-
+    
     /**
      * @param int $quantity
      */
@@ -128,23 +124,26 @@ class Product
     {
         $this->quantity = $quantity;
     }
-
+    
     /**
-     * @return Farm
+     * @return Farm|null
      */
-    public function getFarm(): Farm
+    public function getFarm(): ?Farm
     {
         return $this->farm;
     }
-
+    
     /**
-     * @param Farm $farm
+     * @param Farm|null $farm
      */
-    public function setFarm(Farm $farm): void
+    public function setFarm(?Farm $farm): void
     {
         $this->farm = $farm;
     }
-
+    
+    
+    
+    
     /**
      * @return Price|null
      */
@@ -152,7 +151,7 @@ class Product
     {
         return $this->price;
     }
-
+    
     /**
      * @param Price|null $price
      * @return Product
@@ -160,10 +159,10 @@ class Product
     public function setPrice(?Price $price): Product
     {
         $this->price = $price;
-
+        
         return $this;
     }
-
+    
     /**
      * @return float
      */
@@ -171,34 +170,20 @@ class Product
     {
         return ($this->price->getUnitPrice() * $this->price->getVat()) / 100;
     }
-
+    
     /**
-     * @return Collection|CartItem[]
+     * @return Image|null
      */
-    public function getCartItems(): Collection
+    public function getImage(): ?Image
     {
-        return $this->cartItems;
+        return $this->image;
     }
-
-    public function addCartItem(CartItem $cartItem): self
+    
+    /**
+     * @param Image|null $image
+     */
+    public function setImage(?Image $image): void
     {
-        if (!$this->cartItems->contains($cartItem)) {
-            $this->cartItems[] = $cartItem;
-            $cartItem->setProduct($this);
-        }
-
-        return $this;
-    }
-
-    public function removeCartItem(CartItem $cartItem): self
-    {
-        if ($this->cartItems->removeElement($cartItem)) {
-            // set the owning side to null (unless already changed)
-            if ($cartItem->getProduct() === $this) {
-                $cartItem->setProduct(null);
-            }
-        }
-
-        return $this;
+        $this->image = $image;
     }
 }
