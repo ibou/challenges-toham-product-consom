@@ -7,8 +7,6 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormEvent;
-use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -24,12 +22,9 @@ class FarmType extends AbstractType
     {
         $builder
             ->add("name", TextType::class, [
-                "label" => "Nom de votre exploitation",
-                "empty_data" => ""
+                "label" => "Nom de votre exploitation"
             ])
-            ->add('address', AddressType::class, [
-                'label' => false
-            ])
+            ->add("address", AddressType::class, ["label" => false])
             ->add("description", TextareaType::class, [
                 "label" => "Présentation de votre exploitation"
             ]);
