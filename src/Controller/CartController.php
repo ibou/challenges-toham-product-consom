@@ -15,7 +15,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
  * Class CartController
  * @package App\Controller
  * @Route("/cart")
- * @IsGRanted("ROLE_CUSTOMER")
+ * @IsGranted("ROLE_CUSTOMER")
  */
 class CartController extends AbstractController
 {
@@ -23,6 +23,7 @@ class CartController extends AbstractController
      * @param Product $product
      * @return RedirectResponse
      * @Route("/add/{id}", name="cart_add")
+     * @IsGranted("add_to_cart", subject="product")
      */
     public function add(Product $product): RedirectResponse
     {

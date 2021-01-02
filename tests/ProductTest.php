@@ -2,10 +2,9 @@
 
 namespace App\Tests;
 
-use App\Entity\Farm;
-use App\Entity\Producer;
 use App\Entity\Product;
 use Doctrine\ORM\EntityManagerInterface;
+use Generator;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
@@ -25,14 +24,70 @@ class ProductTest extends WebTestCase
     {
         $client = static::createAuthenticatedClient("producer@gmail.com");
         
-        /**
-         * @var RouterInterface $router
-         */
-        $router = $client->getContainer()->get('router');
+        /** @var RouterInterface $router */
+        $router = $client->getContainer()->get("router");
         
-        $client->request(Request::METHOD_GET, $router->generate('product_index'));
+        $client->request(Request::METHOD_GET, $router->generate("product_index"));
         
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
+    }
+    
+    public function testSuccessfulProductDelete(): void
+    {
+        $client = static::createAuthenticatedClient("producer@gmail.com");
+        
+        /** @var RouterInterface $router */
+        $router = $client->getContainer()->get("router");
+        
+        /** @var EntityManagerInterface $entityManager */
+        $entityManager = $client->getContainer()->get("doctrine.orm.entity_manager");
+        
+        $product = $entityManager->getRepository(Product::class)->findOneBy([]);
+        
+        $client->request(
+            Request::METHOD_GET,
+            $router->generate(
+                "product_delete",
+                [
+                    "id" => (string)$product->getId()
+                ]
+            )
+        );
+        
+        $this->assertResponseStatusCodeSame(Response::HTTP_FOUND);
+    }
+    
+    public function testSuccessfulProductStock(): void
+    {
+        $client = static::createAuthenticatedClient("producer@gmail.com");
+        
+        /** @var RouterInterface $router */
+        $router = $client->getContainer()->get("router");
+        
+        /** @var EntityManagerInterface $entityManager */
+        $entityManager = $client->getContainer()->get("doctrine.orm.entity_manager");
+        
+        $product = $entityManager->getRepository(Product::class)->findOneBy([]);
+        
+        $crawler = $client->request(
+            Request::METHOD_GET,
+            $router->generate(
+                "product_stock",
+                [
+                    "id" => (string)$product->getId()
+                ]
+            )
+        );
+        
+        $form = $crawler->filter("form[name=stock]")->form(
+            [
+                "stock[quantity]" => 10
+            ]
+        );
+        
+        $client->submit($form);
+        
+        $this->assertResponseStatusCodeSame(Response::HTTP_FOUND);
     }
     
     public function testSuccessfulProductUpdate(): void
@@ -45,18 +100,14 @@ class ProductTest extends WebTestCase
         /** @var EntityManagerInterface $entityManager */
         $entityManager = $client->getContainer()->get("doctrine.orm.entity_manager");
         
-        $producer = $entityManager->getRepository(Producer::class)->findOneByEmail("producer@gmail.com");
-        
-        $farm = $entityManager->getRepository(Farm::class)->findOneByProducer($producer);
-        
-        $product = $entityManager->getRepository(Product::class)->findOneByFarm($farm);
+        $product = $entityManager->getRepository(Product::class)->findOneBy([]);
         
         $crawler = $client->request(
             Request::METHOD_GET,
             $router->generate(
                 "product_update",
                 [
-                    "id" => (string)$product->getId(),
+                    "id" => (string)$product->getId()
                 ]
             )
         );
@@ -76,123 +127,7 @@ class ProductTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FOUND);
     }
     
-    public function testSuccessfulProductDelete(): void
-    {
-        $client = static::createAuthenticatedClient("producer@gmail.com");
-        
-        /** @var RouterInterface $router */
-        $router = $client->getContainer()->get("router");
-        
-        /** @var EntityManagerInterface $entityManager */
-        $entityManager = $client->getContainer()->get("doctrine.orm.entity_manager");
-        
-        $producer = $entityManager->getRepository(Producer::class)->findOneByEmail("producer@gmail.com");
-        
-        $farm = $entityManager->getRepository(Farm::class)->findOneByProducer($producer);
-        
-        $product = $entityManager->getRepository(Product::class)->findOneByFarm($farm);
-        
-        $client->request(
-            Request::METHOD_GET,
-            $router->generate(
-                "product_delete",
-                [
-                    "id" => (string)$product->getId(),
-                ]
-            )
-        );
-        $this->assertResponseStatusCodeSame(Response::HTTP_FOUND);
-    }
-    
-    
     public function testSuccessfulProductCreate(): void
-    {
-        $client = static::createAuthenticatedClient("producer@gmail.com");
-        
-        /**
-         * @var RouterInterface $router
-         */
-        $router = $client->getContainer()->get('router');
-        
-        $crawler = $client->request(Request::METHOD_GET, $router->generate('product_create'));
-        
-        $form = $crawler->filter("form[name=product]")
-            ->form(
-                [
-                    "product[name]" => "lait",
-                    "product[description]" => "Du lait ferment, pure...",
-                    "product[price][unitPrice]" => 101,
-                    "product[price][vat]" => 2.1,
-                    "product[image][file]" => $this->createImage(),
-                ]
-            );
-        
-        $client->submit($form);
-        $this->assertResponseStatusCodeSame(Response::HTTP_FOUND);
-    }
-    
-    private function createImage(): UploadedFile
-    {
-        $filename = Uuid::v4().'.png';
-        copy(
-            __DIR__.'/../public/uploads/image.png',
-            __DIR__.'/../public/uploads/'.$filename
-        );
-        
-        return new UploadedFile(
-            __DIR__.'/../public/uploads/'.$filename,
-            $filename,
-            'image/png',
-            null,
-            true
-        );
-    }
-    
-    public function testSuccessfulProductStock(): void
-    {
-        $client = static::createAuthenticatedClient("producer@gmail.com");
-        
-        /** @var RouterInterface $router */
-        $router = $client->getContainer()->get("router");
-        
-        /** @var EntityManagerInterface $entityManager */
-        $entityManager = $client->getContainer()->get("doctrine.orm.entity_manager");
-        
-        $producer = $entityManager->getRepository(Producer::class)->findOneByEmail("producer@gmail.com");
-        
-        $farm = $entityManager->getRepository(Farm::class)->findOneByProducer($producer);
-        
-        $product = $entityManager->getRepository(Product::class)->findOneByFarm($farm);
-        
-        $crawler = $client->request(
-            Request::METHOD_GET,
-            $router->generate(
-                "product_stock",
-                [
-                    "id" => (string)$product->getId(),
-                ]
-            )
-        );
-        
-        
-        $form = $crawler->filter("form[name=stock]")
-            ->form(
-                [
-                    "stock[quantity]" => 21,
-                ]
-            );
-        
-        $client->submit($form);
-        $this->assertResponseStatusCodeSame(Response::HTTP_FOUND);
-    }
-    
-    
-    /**
-     * @param array $formData
-     * @param string $errorMessage
-     * @dataProvider provideBadRequests
-     */
-    public function testFailedProductCreate(array $formData, string $errorMessage): void
     {
         $client = static::createAuthenticatedClient("producer@gmail.com");
         
@@ -201,13 +136,19 @@ class ProductTest extends WebTestCase
         
         $crawler = $client->request(Request::METHOD_GET, $router->generate("product_create"));
         
-        $form = $crawler->filter("form[name=product]")->form($formData);
+        $form = $crawler->filter("form[name=product]")->form(
+            [
+                "product[name]" => "Produit",
+                "product[description]" => "Description",
+                "product[price][unitPrice]" => 100,
+                "product[price][vat]" => 2.1,
+                "product[image][file]" => $this->createImage()
+            ]
+        );
         
         $client->submit($form);
         
-        $this->assertResponseStatusCodeSame(Response::HTTP_OK);
-        
-        $this->assertSelectorTextContains("span.form-error-message", $errorMessage);
+        $this->assertResponseStatusCodeSame(Response::HTTP_FOUND);
     }
     
     /**
@@ -232,7 +173,7 @@ class ProductTest extends WebTestCase
             $router->generate(
                 "product_update",
                 [
-                    "id" => (string)$product->getId(),
+                    "id" => (string)$product->getId()
                 ]
             )
         );
@@ -246,17 +187,39 @@ class ProductTest extends WebTestCase
         $this->assertSelectorTextContains("span.form-error-message", $errorMessage);
     }
     
+    /**
+     * @param array $formData
+     * @param string $errorMessage
+     * @dataProvider provideBadRequests
+     */
+    public function testFailedProductCreate(array $formData, string $errorMessage): void
+    {
+        $client = static::createAuthenticatedClient("producer@gmail.com");
+        
+        /** @var RouterInterface $router */
+        $router = $client->getContainer()->get("router");
+        
+        $crawler = $client->request(Request::METHOD_GET, $router->generate("product_create"));
+        
+        $form = $crawler->filter("form[name=product]")->form($formData);
+        
+        $client->submit($form);
+        
+        $this->assertResponseStatusCodeSame(Response::HTTP_OK);
+        
+        $this->assertSelectorTextContains("span.form-error-message", $errorMessage);
+    }
     
-    public function provideBadRequests(): \Generator
+    public function provideBadRequests(): Generator
     {
         yield [
             [
                 "product[name]" => "",
                 "product[description]" => "Description",
                 "product[price][unitPrice]" => 100,
-                "product[price][vat]" => 2.1,
+                "product[price][vat]" => 2.1
             ],
-            "Cette valeur ne doit pas être vide.",
+            "Cette valeur ne doit pas être vide."
         ];
         
         yield [
@@ -264,9 +227,9 @@ class ProductTest extends WebTestCase
                 "product[name]" => "Produit",
                 "product[description]" => "",
                 "product[price][unitPrice]" => 100,
-                "product[price][vat]" => 2.1,
+                "product[price][vat]" => 2.1
             ],
-            "Cette valeur ne doit pas être vide.",
+            "Cette valeur ne doit pas être vide."
         ];
         
         yield [
@@ -274,9 +237,9 @@ class ProductTest extends WebTestCase
                 "product[name]" => "Produit",
                 "product[description]" => "Description",
                 "product[price][unitPrice]" => null,
-                "product[price][vat]" => 2.1,
+                "product[price][vat]" => 2.1
             ],
-            "Cette valeur n'est pas valide.",
+            "Cette valeur n'est pas valide."
         ];
         
         yield [
@@ -284,28 +247,25 @@ class ProductTest extends WebTestCase
                 "product[name]" => "Produit",
                 "product[description]" => "Description",
                 "product[price][unitPrice]" => -1,
-                "product[price][vat]" => 2.1,
+                "product[price][vat]" => 2.1
             ],
-            "Cette valeur doit être supérieure à 0.",
+            "Cette valeur doit être supérieure à 0."
         ];
     }
     
-    
-    public function testAccessDeniedProductCreate(): void
+    public function testAccessDeniedProductCreate()
     {
         $client = static::createAuthenticatedClient("customer@gmail.com");
         
-        /**
-         * @var RouterInterface $router
-         */
-        $router = $client->getContainer()->get('router');
+        /** @var RouterInterface $router */
+        $router = $client->getContainer()->get("router");
         
-        $client->request(Request::METHOD_GET, $router->generate('product_create'));
+        $client->request(Request::METHOD_GET, $router->generate("product_create"));
         
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
     
-    public function testDeniedProductUpdate(): void
+    public function testAccessDeniedProductUpdate()
     {
         $client = static::createAuthenticatedClient("customer@gmail.com");
         
@@ -315,25 +275,20 @@ class ProductTest extends WebTestCase
         /** @var EntityManagerInterface $entityManager */
         $entityManager = $client->getContainer()->get("doctrine.orm.entity_manager");
         
-        $producer = $entityManager->getRepository(Producer::class)->findOneByEmail("producer@gmail.com");
+        $product = $entityManager->getRepository(Product::class)->findOneBy([]);
         
-        $farm = $entityManager->getRepository(Farm::class)->findOneByProducer($producer);
-        
-        $product = $entityManager->getRepository(Product::class)->findOneByFarm($farm);
-        
-        $crawler = $client->request(
+        $client->request(
             Request::METHOD_GET,
             $router->generate(
                 "product_update",
                 [
-                    "id" => (string)$product->getId(),
+                    "id" => (string)$product->getId()
                 ]
             )
         );
         
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
-    
     
     public function testAccessDeniedProductDelete()
     {
@@ -352,7 +307,7 @@ class ProductTest extends WebTestCase
             $router->generate(
                 "product_delete",
                 [
-                    "id" => (string)$product->getId(),
+                    "id" => (string)$product->getId()
                 ]
             )
         );
@@ -405,7 +360,7 @@ class ProductTest extends WebTestCase
             $router->generate(
                 "product_update",
                 [
-                    "id" => (string)$product->getId(),
+                    "id" => (string)$product->getId()
                 ]
             )
         );
@@ -434,7 +389,7 @@ class ProductTest extends WebTestCase
             $router->generate(
                 "product_delete",
                 [
-                    "id" => (string)$product->getId(),
+                    "id" => (string)$product->getId()
                 ]
             )
         );
@@ -460,5 +415,25 @@ class ProductTest extends WebTestCase
         $client->followRedirect();
         
         $this->assertRouteSame("security_login");
+    }
+    
+    /**
+     * @return UploadedFile
+     */
+    private function createImage(): UploadedFile
+    {
+        $filename = Uuid::v4().'.png';
+        copy(
+            __DIR__.'/../public/uploads/image.png',
+            __DIR__.'/../public/uploads/'.$filename
+        );
+        
+        return new UploadedFile(
+            __DIR__.'/../public/uploads/'.$filename,
+            $filename,
+            'image/png',
+            null,
+            true
+        );
     }
 }

@@ -22,3 +22,6 @@ prepare-test: bin
 	php bin/console doctrine:database:create --env=test
 	php bin/console doctrine:schema:update -f --env=test
 	php bin/console doctrine:fixtures:load -n --env=test
+
+tests-cov:
+	XDEBUG_MODE=coverage bin/phpunit --coverage-text --testdox
