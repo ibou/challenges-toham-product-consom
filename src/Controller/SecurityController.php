@@ -42,12 +42,11 @@ class SecurityController extends AbstractController
         UserPasswordEncoderInterface $userPasswordEncoder
     ): Response {
         $user = Producer::ROLE === $role ? new Producer() : new Customer();
-        $user->setId(Uuid::v4());
         $form = $this->createForm(
             RegistrationType::class,
             $user,
             [
-                "validation_groups" => ["Default","password"],
+                "validation_groups" => ["Default", "password"],
             ]
         )->handleRequest($request);
 

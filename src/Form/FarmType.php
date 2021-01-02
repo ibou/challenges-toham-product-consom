@@ -26,7 +26,7 @@ class FarmType extends AbstractType
                 "label" => "Nom de votre exploitation"
             ])
             ->add('image', ImageType::class, [
-                'label'=>false
+                'label' => false
             ])
             ->add("address", AddressType::class, ["label" => false])
             ->add("description", TextareaType::class, [

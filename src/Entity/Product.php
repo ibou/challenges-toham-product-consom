@@ -2,10 +2,12 @@
 
 namespace App\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
-use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Uid\Uuid;
+use Doctrine\ORM\Mapping as ORM;
+use Ramsey\Uuid\Doctrine\UuidGenerator;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
+use Ramsey\Uuid\UuidInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -16,67 +18,60 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Product
 {
-    
+
     /**
      * @ORM\Id
      * @ORM\Column(type="uuid")
+     * @ORM\GeneratedValue(strategy="CUSTOM")
+     * @ORM\CustomIdGenerator(class=UuidGenerator::class)
      */
-    private Uuid $id;
-    
+    private UuidInterface $id;
     /**
      * @ORM\Column
      * @Assert\NotBlank
      */
     private string $name = "";
-    
+
     /**
      * @ORM\Column(type="text")
      * @Assert\NotBlank
      */
     private string $description = "";
-    
+
     /**
      * @ORM\Column(type="integer")
      * @Assert\NotBlank
      * @Assert\GreaterThanOrEqual(0)
      */
     private int $quantity = 0;
-    
+
     /**
      * @ORM\ManyToOne(targetEntity="Farm")
      * @ORM\JoinColumn(onDelete="CASCADE", nullable=false)
      */
     private ?Farm $farm = null;
-    
+
     /**
      * @ORM\Embedded(class="Price")
      * @Assert\Valid
      */
     private ?Price $price = null;
-    
+
     /**
      * @ORM\Embedded(class="Image")
      * @Assert\Valid
      */
     private ?Image $image = null;
-    
-    
+
+
     /**
-     * @return Uuid
+     * @return UuidInterface
      */
-    public function getId(): Uuid
+    public function getId(): UuidInterface
     {
         return $this->id;
     }
-    
-    /**
-     * @param Uuid $id
-     */
-    public function setId(Uuid $id): void
-    {
-        $this->id = $id;
-    }
-    
+
     /**
      * @return string
      */
@@ -84,7 +79,7 @@ class Product
     {
         return $this->name;
     }
-    
+
     /**
      * @param string $name
      */
@@ -92,7 +87,7 @@ class Product
     {
         $this->name = $name;
     }
-    
+
     /**
      * @return string
      */
@@ -100,7 +95,7 @@ class Product
     {
         return $this->description;
     }
-    
+
     /**
      * @param string $description
      */
@@ -108,7 +103,7 @@ class Product
     {
         $this->description = $description;
     }
-    
+
     /**
      * @return int
      */
@@ -116,7 +111,7 @@ class Product
     {
         return $this->quantity;
     }
-    
+
     /**
      * @param int $quantity
      */
@@ -124,7 +119,7 @@ class Product
     {
         $this->quantity = $quantity;
     }
-    
+
     /**
      * @return Farm|null
      */
@@ -132,7 +127,7 @@ class Product
     {
         return $this->farm;
     }
-    
+
     /**
      * @param Farm|null $farm
      */
@@ -140,10 +135,10 @@ class Product
     {
         $this->farm = $farm;
     }
-    
-    
-    
-    
+
+
+
+
     /**
      * @return Price|null
      */
@@ -151,7 +146,7 @@ class Product
     {
         return $this->price;
     }
-    
+
     /**
      * @param Price|null $price
      * @return Product
@@ -159,10 +154,10 @@ class Product
     public function setPrice(?Price $price): Product
     {
         $this->price = $price;
-        
+
         return $this;
     }
-    
+
     /**
      * @return float
      */
@@ -170,7 +165,7 @@ class Product
     {
         return ($this->price->getUnitPrice() * $this->price->getVat()) / 100;
     }
-    
+
     /**
      * @return Image|null
      */
@@ -178,7 +173,7 @@ class Product
     {
         return $this->image;
     }
-    
+
     /**
      * @param Image|null $image
      */

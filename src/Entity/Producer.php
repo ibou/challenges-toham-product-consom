@@ -25,7 +25,6 @@ class Producer extends User
     {
         parent::__construct();
         $this->farm = new Farm();
-        $this->farm->setId(Uuid::v4());
         $this->farm->setProducer($this);
     }
 

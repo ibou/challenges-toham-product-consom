@@ -46,7 +46,6 @@ class ProductController extends AbstractController
     public function create(Request $request): Response
     {
         $product = new Product();
-        $product->setId(Uuid::v4());
         $form = $this->createForm(ProductType::class, $product)->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {

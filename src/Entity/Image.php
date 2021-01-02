@@ -18,12 +18,12 @@ class Image
      * @ORM\Column(name="image_path", nullable=true)
      */
     private ?string $path = null;
-    
+
     /**
      * @Assert\Image
      */
     private ?UploadedFile $file = null;
-    
+
     /**
      * @return string|null
      */
@@ -31,7 +31,7 @@ class Image
     {
         return $this->path;
     }
-    
+
     /**
      * @param string|null $path
      */
@@ -39,7 +39,7 @@ class Image
     {
         $this->path = $path;
     }
-    
+
     /**
      * @return UploadedFile|null
      */
@@ -47,7 +47,7 @@ class Image
     {
         return $this->file;
     }
-    
+
     /**
      * @param UploadedFile|null $file
      */

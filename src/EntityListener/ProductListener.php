@@ -16,17 +16,17 @@ class ProductListener
      * @var Security
      */
     private Security $security;
-    
+
     /**
      * @var string
      */
     private string $uploadAbsoluteDir;
-    
+
     /**
      * @var string
      */
     private string $uploadWebDir;
-    
+
     /**
      * ProductListener constructor.
      * @param Security $security
@@ -39,8 +39,8 @@ class ProductListener
         $this->uploadAbsoluteDir = $uploadAbsoluteDir;
         $this->uploadWebDir = $uploadWebDir;
     }
-    
-    
+
+
     /**
      * @param Product $product
      */
@@ -52,7 +52,7 @@ class ProductListener
         $product->setFarm($this->security->getUser()->getFarm());
         $this->upload($product);
     }
-    
+
     /**
      * @param Product $product
      */
@@ -60,20 +60,20 @@ class ProductListener
     {
         $this->upload($product);
     }
-    
+
     /**
      * @param Product $product
      */
     private function upload(Product $product): void
     {
         if ($product->getImage() === null || $product->getImage()->getFile() === null) {
-            return;
+            return; // @codeCoverageIgnore
         }
-    
-        $filename = Uuid::v4() .'.'. $product->getImage()->getFile()->getClientOriginalExtension();
-    
+
+        $filename = Uuid::v4() . '.' . $product->getImage()->getFile()->getClientOriginalExtension();
+
         $product->getImage()->getFile()->move($this->uploadAbsoluteDir, $filename);
-    
+
         $product->getImage()->setPath($this->uploadWebDir . $filename);
     }
 }
