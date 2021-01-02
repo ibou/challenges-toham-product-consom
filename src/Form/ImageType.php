@@ -29,7 +29,7 @@ class ImageType extends AbstractType
                 ]
             );
     }
-    
+
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefault("data_class", Image::class);

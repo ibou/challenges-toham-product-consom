@@ -5,7 +5,8 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\Uid\Uuid;
+use Ramsey\Uuid\Doctrine\UuidGenerator;
+use Ramsey\Uuid\UuidInterface;
 
 /**
  * Class Farm
@@ -17,9 +18,11 @@ class Farm
     /**
      * @ORM\Id
      * @ORM\Column(type="uuid")
+     * @ORM\GeneratedValue(strategy="CUSTOM")
+     * @ORM\CustomIdGenerator(class=UuidGenerator::class)
      * @Groups({"read"})
      */
-    private Uuid $id;
+    private UuidInterface $id;
 
     /**
      * @ORM\Column(nullable=true)
@@ -46,27 +49,19 @@ class Farm
      * @Assert\Valid
      */
     private ?Address $address = null;
-    
+
     /**
      * @ORM\Embedded(class="Image")
      * @Assert\Valid
      */
     private Image $image;
-    
-    /**
-     * @return Uuid|null
-     */
-    public function getId(): ?Uuid
-    {
-        return $this->id;
-    }
 
     /**
-     * @param Uuid $id
+     * @return UuidInterface
      */
-    public function setId(Uuid $id): void
+    public function getId(): UuidInterface
     {
-        $this->id = $id;
+        return $this->id;
     }
 
     /**
@@ -132,8 +127,8 @@ class Farm
     {
         $this->address = $address;
     }
-    
-    
+
+
     /**
      * @return Image
      */
@@ -141,7 +136,7 @@ class Farm
     {
         return $this->image;
     }
-    
+
     /**
      * @param Image $image
      */

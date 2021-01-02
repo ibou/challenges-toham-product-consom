@@ -27,7 +27,7 @@ class ProductType extends AbstractType
                 "empty_data" => ""
             ])
             ->add('image', ImageType::class, [
-                "label"=>false
+                "label" => false
             ])
         ;
     }
