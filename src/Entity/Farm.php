@@ -46,7 +46,13 @@ class Farm
      * @Assert\Valid
      */
     private ?Address $address = null;
-
+    
+    /**
+     * @ORM\Embedded(class="Image")
+     * @Assert\Valid
+     */
+    private Image $image;
+    
     /**
      * @return Uuid|null
      */
@@ -125,5 +131,22 @@ class Farm
     public function setAddress(?Address $address): void
     {
         $this->address = $address;
+    }
+    
+    
+    /**
+     * @return Image
+     */
+    public function getImage(): Image
+    {
+        return $this->image;
+    }
+    
+    /**
+     * @param Image $image
+     */
+    public function setImage(Image $image): void
+    {
+        $this->image = $image;
     }
 }

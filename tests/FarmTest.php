@@ -6,9 +6,11 @@ use App\Entity\Farm;
 use Doctrine\ORM\EntityManagerInterface;
 use Generator;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Uid\Uuid;
 
 /**
  * Class FarmTest
@@ -36,12 +38,34 @@ class FarmTest extends WebTestCase
                 "farm[address][city]" => "Chartres",
                 "farm[address][position][latitude]" => 46.5,
                 "farm[address][position][longitude]" => 7.5,
+                "farm[image][file]" => $this->createImage()
             ]
         );
 
         $client->submit($form);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_FOUND);
+    }
+    
+    
+    /**
+     * @return UploadedFile
+     */
+    private function createImage(): UploadedFile
+    {
+        $filename = Uuid::v4() . '.png';
+        copy(
+            __DIR__ . '/../public/uploads/image.png',
+            __DIR__ . '/../public/uploads/' . $filename
+        );
+        
+        return new UploadedFile(
+            __DIR__ . '/../public/uploads/' . $filename,
+            $filename,
+            'image/png',
+            null,
+            true
+        );
     }
 
 
