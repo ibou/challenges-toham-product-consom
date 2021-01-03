@@ -26,13 +26,13 @@ class FarmType extends AbstractType
         $builder
             ->add("name", TextType::class, [
                 "label" => "Nom de votre exploitation",
-                "empty_data"=>""
+                "empty_data" => ""
             ])
             ->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event): void {
                 $form = $event->getForm();
                 /** @var Farm $farm */
                 $farm = $event->getData();
-                
+
                 if (null !== $farm->getId()) {
                     $form
                         ->add('image', ImageType::class, [

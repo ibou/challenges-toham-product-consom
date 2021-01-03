@@ -14,20 +14,20 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 class FarmListener
 {
     private SluggerInterface $slugger;
-    
+
     private FarmRepository $farmRepository;
-    
+
     public function __construct(SluggerInterface $slugger, FarmRepository $farmRepository)
     {
         $this->slugger = $slugger;
         $this->farmRepository = $farmRepository;
     }
-    
+
     public function prePersist(Farm $farm): void
     {
         $this->setSlug($farm);
     }
-    
+
     private function setSlug(Farm $farm): void
     {
         $slug = $this->farmRepository->getNextSlug(
@@ -35,7 +35,7 @@ class FarmListener
         );
         $farm->setSlug($slug);
     }
-    
+
     public function preUpdate(Farm $farm, PreUpdateEventArgs $args): void
     {
         if ($args->hasChangedField("name")) {

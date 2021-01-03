@@ -55,14 +55,14 @@ class RegistrationType extends AbstractType
                 ]
             )
             ->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event): void {
-    
+
                 /** @var User $user */
                 $user = $event->getData();
-    
+
                 if (!$user instanceof Producer) {
                     return;
                 }
-    
+
                 $form = $event->getForm();
                 $form->add("farm", FarmType::class);
             })

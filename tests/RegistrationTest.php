@@ -22,10 +22,10 @@ class RegistrationTest extends WebTestCase
     public function testSuccessfulRegistration(string $role, array $formData): void
     {
         $client = static::createClient();
-        
+
         /** @var RouterInterface $router */
         $router = $client->getContainer()->get("router");
-        
+
         $crawler = $client->request(
             Request::METHOD_GET,
             $router->generate(
@@ -35,14 +35,14 @@ class RegistrationTest extends WebTestCase
                 ]
             )
         );
-        
+
         $form = $crawler->filter("form[name=registration]")->form($formData);
-        
+
         $client->submit($form);
-        
+
         $this->assertResponseStatusCodeSame(Response::HTTP_FOUND);
     }
-    
+
     /**
      * @return Generator
      */
@@ -78,7 +78,7 @@ class RegistrationTest extends WebTestCase
             ],
         ];
     }
-    
+
     /**
      * @param array $formData
      * @param string $errorMessage
@@ -87,10 +87,10 @@ class RegistrationTest extends WebTestCase
     public function testBadRequest(string $role, array $formData, string $errorMessage): void
     {
         $client = static::createClient();
-        
+
         /** @var RouterInterface $router */
         $router = $client->getContainer()->get("router");
-        
+
         $crawler = $client->request(
             Request::METHOD_GET,
             $router->generate(
@@ -100,22 +100,22 @@ class RegistrationTest extends WebTestCase
                 ]
             )
         );
-        
+
         $form = $crawler->filter("form[name=registration]")->form($formData);
-        
+
         $client->submit($form);
-        
+
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
-        
+
         $this->assertSelectorTextContains("span.form-error-message", $errorMessage);
     }
-    
+
     public function provideBadRequests(): Generator
     {
         yield from $this->provideCustomerBadRequests();
         yield from $this->provideProducerBadRequests();
     }
-    
+
     public function provideCustomerBadRequests(): Generator
     {
         yield [
@@ -128,7 +128,7 @@ class RegistrationTest extends WebTestCase
             ],
             "Cette valeur ne doit pas être vide.",
         ];
-        
+
         yield [
             "customer",
             [
@@ -139,7 +139,7 @@ class RegistrationTest extends WebTestCase
             ],
             "Cette valeur ne doit pas être vide.",
         ];
-        
+
         yield [
             "customer",
             [
@@ -150,7 +150,7 @@ class RegistrationTest extends WebTestCase
             ],
             "Cette valeur ne doit pas être vide.",
         ];
-        
+
         yield [
             "customer",
             [
@@ -161,7 +161,7 @@ class RegistrationTest extends WebTestCase
             ],
             "Cette valeur ne doit pas être vide.",
         ];
-        
+
         yield [
             "customer",
             [
@@ -172,7 +172,7 @@ class RegistrationTest extends WebTestCase
             ],
             "Cette valeur n'est pas une adresse email valide.",
         ];
-        
+
         yield [
             "customer",
             [
@@ -183,7 +183,7 @@ class RegistrationTest extends WebTestCase
             ],
             "Cette chaîne est trop courte. Elle doit avoir au minimum 3 caractères.",
         ];
-        
+
         yield [
             "customer",
             [
@@ -195,7 +195,7 @@ class RegistrationTest extends WebTestCase
             "Il semblerait que vous soyez déjà inscrit.",
         ];
     }
-    
+
     public function provideProducerBadRequests(): Generator
     {
         yield [
@@ -209,7 +209,7 @@ class RegistrationTest extends WebTestCase
             ],
             "Cette valeur ne doit pas être vide.",
         ];
-        
+
         yield [
             "producer",
             [
@@ -221,7 +221,7 @@ class RegistrationTest extends WebTestCase
             ],
             "Cette valeur ne doit pas être vide.",
         ];
-        
+
         yield [
             "producer",
             [
@@ -233,7 +233,7 @@ class RegistrationTest extends WebTestCase
             ],
             "Cette valeur ne doit pas être vide.",
         ];
-        
+
         yield [
             "producer",
             [
@@ -245,7 +245,7 @@ class RegistrationTest extends WebTestCase
             ],
             "Cette valeur ne doit pas être vide.",
         ];
-        
+
         yield [
             "producer",
             [
@@ -257,7 +257,7 @@ class RegistrationTest extends WebTestCase
             ],
             "Cette valeur ne doit pas être vide.",
         ];
-        
+
         yield [
             "producer",
             [
@@ -269,7 +269,7 @@ class RegistrationTest extends WebTestCase
             ],
             "Cette valeur n'est pas une adresse email valide.",
         ];
-        
+
         yield [
             "producer",
             [
@@ -281,7 +281,7 @@ class RegistrationTest extends WebTestCase
             ],
             "Cette chaîne est trop courte. Elle doit avoir au minimum 3 caractères.",
         ];
-        
+
         yield [
             "producer",
             [

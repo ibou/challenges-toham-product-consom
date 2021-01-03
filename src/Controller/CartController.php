@@ -30,7 +30,7 @@ class CartController extends AbstractController
         $this->getUser()->addToCart($product);
         $this->getDoctrine()->getManager()->flush();
         $this->addFlash("success", "Le produit a bien été ajouté à votre panier.");
-        
+
         return $this->redirectToRoute(
             "farm_show",
             [
@@ -38,7 +38,7 @@ class CartController extends AbstractController
             ]
         );
     }
-    
+
     /**
      * @param Request $request
      * @return Response
@@ -47,17 +47,17 @@ class CartController extends AbstractController
     public function index(Request $request): Response
     {
         $form = $this->createForm(CartType::class, $this->getUser())->handleRequest($request);
-        
+
         if ($form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
             $this->addFlash(
                 "success",
                 "Votre panier a été modifiée avec succès."
             );
-            
+
             return $this->redirectToRoute("cart_index");
         }
-        
+
         return $this->render(
             "ui/cart/index.html.twig",
             [

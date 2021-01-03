@@ -46,8 +46,8 @@ class FarmTest extends WebTestCase
 
         $this->assertResponseStatusCodeSame(Response::HTTP_FOUND);
     }
-    
-    
+
+
     /**
      * @return UploadedFile
      */
@@ -58,7 +58,7 @@ class FarmTest extends WebTestCase
             __DIR__ . '/../public/uploads/image.png',
             __DIR__ . '/../public/uploads/' . $filename
         );
-        
+
         return new UploadedFile(
             __DIR__ . '/../public/uploads/' . $filename,
             $filename,

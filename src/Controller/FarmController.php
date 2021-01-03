@@ -56,11 +56,11 @@ class FarmController extends AbstractController
      */
     public function update(Request $request): Response
     {
-        
+
         $form = $this->createForm(FarmType::class, $this->getUser()->getFarm(), [
             "validation_groups" => ["Default", "edit"]
         ])->handleRequest($request);
-        
+
         if ($form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
             $this->addFlash(

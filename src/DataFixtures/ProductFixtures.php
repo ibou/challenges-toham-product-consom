@@ -24,13 +24,13 @@ class ProductFixtures extends Fixture implements DependentFixtureInterface
     public function load(ObjectManager $manager)
     {
         $farms = $manager->getRepository(Farm::class)->findAll();
-        
+
         /** @var Farm $farm */
         foreach ($farms as $farm) {
             for ($i = 1; $i <= 10; $i++) {
                 $product = new Product();
                 $product->setFarm($farm);
-                $product->setName("Product ".$i);
+                $product->setName("Product " . $i);
                 $product->setDescription("Description");
                 $price = new Price();
                 $price->setUnitPrice(rand(100, 1000));
@@ -42,30 +42,30 @@ class ProductFixtures extends Fixture implements DependentFixtureInterface
                 $manager->persist($product);
             }
         }
-        
+
         $manager->flush();
     }
-    
+
     /**
      * @return UploadedFile
      */
     private function createImage(): UploadedFile
     {
-        $filename = Uuid::v4().'.png';
+        $filename = Uuid::v4() . '.png';
         copy(
-            __DIR__.'/../../public/uploads/image.png',
-            __DIR__.'/../../public/uploads/'.$filename
+            __DIR__ . '/../../public/uploads/image.png',
+            __DIR__ . '/../../public/uploads/' . $filename
         );
-        
+
         return new UploadedFile(
-            __DIR__.'/../../public/uploads/'.$filename,
+            __DIR__ . '/../../public/uploads/' . $filename,
             $filename,
             'image/png',
             null,
             true
         );
     }
-    
+
     /**
      * @inheritDoc
      */
