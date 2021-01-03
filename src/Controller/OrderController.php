@@ -11,18 +11,17 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Uid\Uuid;
 
 /**
  * Class OrderController
  * @package App\Controller
  * @Route("/order")
- * @IsGranted("ROLE_CUSTOMER")
  */
 class OrderController extends AbstractController
 {
     /**
      * @Route("/create", name="order_create")
+     * @IsGranted("ROLE_CUSTOMER")
      */
     public function create(): RedirectResponse
     {
@@ -40,11 +39,28 @@ class OrderController extends AbstractController
             $order->getLines()->add($line);
         }
 
+        $order->setFarm($this->getUser()->getCart()->first()->getProduct()->getFarm());
         $this->getUser()->getCart()->clear();
         $this->getDoctrine()->getManager()->persist($order);
         $this->getDoctrine()->getManager()->flush();
 
         return $this->redirectToRoute("index");
+    }
+
+    /**
+     * @param OrderRepository $orderRepository
+     * @return Response
+     * @Route("/manage", name="order_manage")
+     * @IsGranted("ROLE_PRODUCER")
+     */
+    public function manage(OrderRepository $orderRepository): Response
+    {
+        return $this->render(
+            "ui/order/manage.html.twig",
+            [
+                "orders" => $orderRepository->findByFarm($this->getUser()->getFarm())
+            ]
+        );
     }
 
     /**

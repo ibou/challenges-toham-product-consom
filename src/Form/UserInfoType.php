@@ -11,7 +11,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Security\Core\Validator\Constraints\UserPassword;
 
-class UserInfosType extends AbstractType
+class UserInfoType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
