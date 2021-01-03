@@ -24,7 +24,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  * @ORM\DiscriminatorMap({"producer"="App\Entity\Producer", "customer"="App\Entity\Customer"})
  * @UniqueEntity(
  *     fields={"email"},
- *     message="Il semble que cette adresse email soit déjà prise.",
+ *     message="Il semblerait que vous soyez déjà inscrit.",
  *     entityClass="App\Entity\User"
  * )
  */

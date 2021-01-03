@@ -27,7 +27,7 @@ class CartItem
     private int $quantity;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Product::class, inversedBy="cartItems")
+     * @ORM\ManyToOne(targetEntity=Product::class)
      * @ORM\JoinColumn(onDelete="CASCADE")
      */
     private Product $product;

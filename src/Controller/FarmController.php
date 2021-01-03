@@ -38,7 +38,7 @@ class FarmController extends AbstractController
      * @param Farm $farm
      * @param ProductRepository $productRepository
      * @return Response
-     * @Route("/{id}/show", name="farm_show")
+     * @Route("/{slug}/show", name="farm_show")
      */
     public function show(Farm $farm, ProductRepository $productRepository): Response
     {
@@ -56,8 +56,11 @@ class FarmController extends AbstractController
      */
     public function update(Request $request): Response
     {
-        $form = $this->createForm(FarmType::class, $this->getUser()->getFarm())->handleRequest($request);
-
+        
+        $form = $this->createForm(FarmType::class, $this->getUser()->getFarm(), [
+            "validation_groups" => ["Default", "edit"]
+        ])->handleRequest($request);
+        
         if ($form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
             $this->addFlash(

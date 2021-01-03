@@ -31,7 +31,7 @@ class FarmTest extends WebTestCase
 
         $form = $crawler->filter("form[name=farm]")->form(
             [
-                "farm[name]" => "Exploitation",
+                "farm[name]" => "Exploitation modifiée",
                 "farm[description]" => "Description",
                 "farm[address][address]" => "address",
                 "farm[address][zipCode]" => "28000",
@@ -79,6 +79,7 @@ class FarmTest extends WebTestCase
         /** @var EntityManagerInterface $entityManager */
         $entityManager = $client->getContainer()->get("doctrine.orm.entity_manager");
 
+        /** @var Farm $farm */
         $farm = $entityManager->getRepository(Farm::class)->findOneBy([]);
 
         $client->request(
@@ -86,7 +87,7 @@ class FarmTest extends WebTestCase
             $router->generate(
                 "farm_show",
                 [
-                    "id" => $farm->getId(),
+                    "slug" => $farm->getSlug(),
                 ]
             )
         );
