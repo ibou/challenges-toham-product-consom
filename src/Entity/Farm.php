@@ -24,45 +24,45 @@ class Farm
      * @Groups({"read"})
      */
     private ?UuidInterface $id = null;
-    
+
     /**
      * @ORM\Column()
      * @Assert\NotBlank
      * @Groups({"read"})
      */
     private string $name = "";
-    
+
     /**
      * @ORM\Column(unique=true)
      * @Groups({"read"})
      */
     private string $slug;
-    
+
     /**
      * @ORM\Column(nullable=true, type="text")
      * @Assert\NotBlank(groups={"edit"})
      */
     private ?string $description = null;
-    
+
     /**
      * @ORM\OneToOne(targetEntity="Producer", mappedBy="farm")
      * @ORM\JoinColumn(onDelete="CASCADE")
      */
     private Producer $producer;
-    
+
     /**
      * @ORM\Embedded(class="Address")
      * @Assert\Valid(groups={"edit"})
      * @Groups({"read"})
      */
     private ?Address $address = null;
-    
+
     /**
      * @ORM\Embedded(class="Image")
      * @Assert\Valid(groups={"edit"})
      */
     private Image $image;
-    
+
     /**
      * @return UuidInterface|null
      */
@@ -70,7 +70,7 @@ class Farm
     {
         return $this->id;
     }
-    
+
     /**
      * @return string
      */
@@ -78,7 +78,7 @@ class Farm
     {
         return $this->name;
     }
-    
+
     /**
      * @param string $name
      */
@@ -86,7 +86,7 @@ class Farm
     {
         $this->name = $name;
     }
-    
+
     /**
      * @return string
      */
@@ -94,7 +94,7 @@ class Farm
     {
         return $this->slug;
     }
-    
+
     /**
      * @param string $slug
      */
@@ -102,7 +102,7 @@ class Farm
     {
         $this->slug = $slug;
     }
-    
+
     /**
      * @return string|null
      */
@@ -110,7 +110,7 @@ class Farm
     {
         return $this->description;
     }
-    
+
     /**
      * @param string|null $description
      */
@@ -118,7 +118,7 @@ class Farm
     {
         $this->description = $description;
     }
-    
+
     /**
      * @return Producer
      */
@@ -126,7 +126,7 @@ class Farm
     {
         return $this->producer;
     }
-    
+
     /**
      * @param Producer $producer
      */
@@ -134,7 +134,7 @@ class Farm
     {
         $this->producer = $producer;
     }
-    
+
     /**
      * @return Address|null
      */
@@ -142,7 +142,7 @@ class Farm
     {
         return $this->address;
     }
-    
+
     /**
      * @param Address|null $address
      */
@@ -150,7 +150,7 @@ class Farm
     {
         $this->address = $address;
     }
-    
+
     /**
      * @return Image
      */
@@ -158,7 +158,7 @@ class Farm
     {
         return $this->image;
     }
-    
+
     /**
      * @param Image $image
      */
