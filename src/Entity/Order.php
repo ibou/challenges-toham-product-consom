@@ -50,7 +50,7 @@ class Order
     private Customer $customer;
 
     /**
-     * @ORM\OneToMany(targetEntity="OrderLine", mappedBy="order", cascade={"persist"})
+     * @ORM\OneToMany(targetEntity="OrderLine", mappedBy="order", cascade={"persist"}, fetch="EXTRA_LAZY")
      */
     private Collection $lines;
 
@@ -59,6 +59,12 @@ class Order
      * @ORM\JoinColumn(onDelete="CASCADE")
      */
     private Farm $farm;
+
+
+    /**
+     * @ORM\Column(type="datetime_immutable", nullable=true)
+     */
+    private ?\DateTimeImmutable $refusedAt = null;
 
     public function __construct()
     {
@@ -164,7 +170,7 @@ class Order
      */
     public function getNumberOfProducts(): int
     {
-        return array_sum($this->lines->map(fn (OrderLine $line) => $line->getQuantity())->toArray());
+        return array_sum($this->lines->map(fn(OrderLine $line) => $line->getQuantity())->toArray());
     }
 
     /**
@@ -172,8 +178,25 @@ class Order
      */
     public function getTotalIncludingTaxes(): float
     {
-        return array_sum($this->lines->map(fn (OrderLine $line) => $line->getPriceIncludingTaxes())->toArray());
+        return array_sum($this->lines->map(fn(OrderLine $line) => $line->getPriceIncludingTaxes())->toArray());
     }
+
+    /**
+     * @return \DateTimeImmutable|null
+     */
+    public function getRefusedAt(): ?\DateTimeImmutable
+    {
+        return $this->refusedAt;
+    }
+
+    /**
+     * @param \DateTimeImmutable|null $refusedAt
+     */
+    public function setRefusedAt(?\DateTimeImmutable $refusedAt): void
+    {
+        $this->refusedAt = $refusedAt;
+    }
+
 
     /**
      * @return Farm
