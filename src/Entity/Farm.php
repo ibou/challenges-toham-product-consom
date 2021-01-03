@@ -3,15 +3,16 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Annotation\Groups;
-use Symfony\Component\Validator\Constraints as Assert;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
 use Ramsey\Uuid\UuidInterface;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * Class Farm
  * @package App\Entity
  * @ORM\Entity
+ * @ORM\EntityListeners({"App\EntityListener\FarmListener"})
  */
 class Farm
 {
@@ -22,64 +23,86 @@ class Farm
      * @ORM\CustomIdGenerator(class=UuidGenerator::class)
      * @Groups({"read"})
      */
-    private UuidInterface $id;
-
+    private ?UuidInterface $id = null;
+    
     /**
-     * @ORM\Column(nullable=true)
+     * @ORM\Column()
      * @Assert\NotBlank
      * @Groups({"read"})
      */
-    private ?string $name = null;
-
+    private string $name = "";
+    
+    /**
+     * @ORM\Column(unique=true)
+     * @Groups({"read"})
+     */
+    private string $slug;
+    
     /**
      * @ORM\Column(nullable=true, type="text")
-     * @Assert\NotBlank
-     * @Groups({"read"})
+     * @Assert\NotBlank(groups={"edit"})
      */
     private ?string $description = null;
-
+    
     /**
      * @ORM\OneToOne(targetEntity="Producer", mappedBy="farm")
      * @ORM\JoinColumn(onDelete="CASCADE")
      */
     private Producer $producer;
-
+    
     /**
      * @ORM\Embedded(class="Address")
-     * @Assert\Valid
+     * @Assert\Valid(groups={"edit"})
+     * @Groups({"read"})
      */
     private ?Address $address = null;
-
+    
     /**
      * @ORM\Embedded(class="Image")
-     * @Assert\Valid
+     * @Assert\Valid(groups={"edit"})
      */
     private Image $image;
-
+    
     /**
-     * @return UuidInterface
+     * @return UuidInterface|null
      */
-    public function getId(): UuidInterface
+    public function getId(): ?UuidInterface
     {
         return $this->id;
     }
-
+    
     /**
-     * @return string|null
+     * @return string
      */
-    public function getName(): ?string
+    public function getName(): string
     {
         return $this->name;
     }
-
+    
     /**
-     * @param string|null $name
+     * @param string $name
      */
-    public function setName(?string $name): void
+    public function setName(string $name): void
     {
         $this->name = $name;
     }
-
+    
+    /**
+     * @return string
+     */
+    public function getSlug(): string
+    {
+        return $this->slug;
+    }
+    
+    /**
+     * @param string $slug
+     */
+    public function setSlug(string $slug): void
+    {
+        $this->slug = $slug;
+    }
+    
     /**
      * @return string|null
      */
@@ -87,7 +110,7 @@ class Farm
     {
         return $this->description;
     }
-
+    
     /**
      * @param string|null $description
      */
@@ -95,7 +118,7 @@ class Farm
     {
         $this->description = $description;
     }
-
+    
     /**
      * @return Producer
      */
@@ -103,7 +126,7 @@ class Farm
     {
         return $this->producer;
     }
-
+    
     /**
      * @param Producer $producer
      */
@@ -111,7 +134,7 @@ class Farm
     {
         $this->producer = $producer;
     }
-
+    
     /**
      * @return Address|null
      */
@@ -119,7 +142,7 @@ class Farm
     {
         return $this->address;
     }
-
+    
     /**
      * @param Address|null $address
      */
@@ -127,8 +150,7 @@ class Farm
     {
         $this->address = $address;
     }
-
-
+    
     /**
      * @return Image
      */
@@ -136,7 +158,7 @@ class Farm
     {
         return $this->image;
     }
-
+    
     /**
      * @param Image $image
      */

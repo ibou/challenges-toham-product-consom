@@ -6,6 +6,7 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Uid\Uuid;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class Producer
@@ -18,6 +19,7 @@ class Producer extends User
 
     /**
      * @ORM\OneToOne(targetEntity="Farm", cascade={"persist"}, inversedBy="producer")
+     * @Assert\Valid
      */
     private Farm $farm;
 
