@@ -20,6 +20,19 @@ class OrderTest extends WebTestCase
 {
     use AuthenticationTrait;
 
+    public function testSuccessfulManageOrder(): void
+    {
+        $client = static::createAuthenticatedClient("producer@gmail.com");
+
+        /** @var RouterInterface $router */
+        $router = $client->getContainer()->get("router");
+
+        $client->request(Request::METHOD_GET, $router->generate("order_manage"));
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_OK);
+    }
+
+
     public function testSuccessfulCreateOrderAndCancelIt(): void
     {
         $client = static::createAuthenticatedClient("customer@gmail.com");

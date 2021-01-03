@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
-use App\Form\UserInfosType;
+use App\Form\UserInfoType;
 use App\Form\UserPasswordType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -52,18 +52,18 @@ class UserController extends AbstractController
     /**
      * @param Request $request
      * @return Response
-     * @Route("/edit-infos", name="user_edit_infos")
+     * @Route("/edit-info", name="user_edit_info")
      */
-    public function editInfos(Request $request): Response
+    public function editInfo(Request $request): Response
     {
-        $form = $this->createForm(UserInfosType::class, $this->getUser())
+        $form = $this->createForm(UserInfoType::class, $this->getUser())
             ->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
             $this->addFlash("success", "Vos infos informations personnelles ont été modifiées avec succès !");
 
-            return $this->redirectToRoute("user_edit_infos");
+            return $this->redirectToRoute("user_edit_info");
         }
 
         return $this->render(

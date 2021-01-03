@@ -134,15 +134,15 @@ class UserTest extends WebTestCase
         $crawler = $client->request(
             Request::METHOD_GET,
             $router->generate(
-                "user_edit_infos"
+                "user_edit_info"
             )
         );
 
-        $form = $crawler->filter("form[name=user_infos]")->form(
+        $form = $crawler->filter("form[name=user_info]")->form(
             [
-                "user_infos[email]" => "email@gmail.com",
-                "user_infos[firstName]" => "John",
-                "user_infos[lastName]" => "Doe",
+                "user_info[email]" => "email@gmail.com",
+                "user_info[firstName]" => "John",
+                "user_info[lastName]" => "Doe",
             ]
         );
         $client->submit($form);
@@ -167,11 +167,11 @@ class UserTest extends WebTestCase
         $crawler = $client->request(
             Request::METHOD_GET,
             $router->generate(
-                "user_edit_infos"
+                "user_edit_info"
             )
         );
 
-        $form = $crawler->filter("form[name=user_infos]")->form(
+        $form = $crawler->filter("form[name=user_info]")->form(
             $formData
         );
         $client->submit($form);
@@ -184,33 +184,33 @@ class UserTest extends WebTestCase
     {
         yield [
             [
-                "user_infos[firstName]" => "",
-                "user_infos[lastName]" => "lastName",
-                "user_infos[email]" => "email@email.com",
+                "user_info[firstName]" => "",
+                "user_info[lastName]" => "lastName",
+                "user_info[email]" => "email@email.com",
             ],
             "Cette valeur ne doit pas être vide.",
         ];
         yield [
             [
-                "user_infos[firstName]" => "firstName",
-                "user_infos[lastName]" => "",
-                "user_infos[email]" => "email@email.com",
+                "user_info[firstName]" => "firstName",
+                "user_info[lastName]" => "",
+                "user_info[email]" => "email@email.com",
             ],
             "Cette valeur ne doit pas être vide.",
         ];
         yield [
             [
-                "user_infos[firstName]" => "firstName",
-                "user_infos[lastName]" => "lastName",
-                "user_infos[email]" => "",
+                "user_info[firstName]" => "firstName",
+                "user_info[lastName]" => "lastName",
+                "user_info[email]" => "",
             ],
             "Cette valeur ne doit pas être vide.",
         ];
         yield [
             [
-                "user_infos[firstName]" => "firstName",
-                "user_infos[lastName]" => "lastName",
-                "user_infos[email]" => "fail",
+                "user_info[firstName]" => "firstName",
+                "user_info[lastName]" => "lastName",
+                "user_info[email]" => "fail",
             ],
             "Cette valeur n'est pas une adresse email valide.",
         ];

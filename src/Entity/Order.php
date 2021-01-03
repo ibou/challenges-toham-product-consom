@@ -54,6 +54,11 @@ class Order
      */
     private Collection $lines;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="Farm")
+     * @ORM\JoinColumn(onDelete="CASCADE")
+     */
+    private Farm $farm;
 
     public function __construct()
     {
@@ -168,5 +173,21 @@ class Order
     public function getTotalIncludingTaxes(): float
     {
         return array_sum($this->lines->map(fn (OrderLine $line) => $line->getPriceIncludingTaxes())->toArray());
+    }
+
+    /**
+     * @return Farm
+     */
+    public function getFarm(): Farm
+    {
+        return $this->farm;
+    }
+
+    /**
+     * @param Farm $farm
+     */
+    public function setFarm(Farm $farm): void
+    {
+        $this->farm = $farm;
     }
 }
