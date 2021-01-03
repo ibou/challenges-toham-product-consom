@@ -5,7 +5,6 @@ namespace App\Entity;
 use App\Repository\CartItemRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
-use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
 /**
@@ -59,12 +58,12 @@ class CartItem
         }
     }
 
-    public function getProduct(): ?Product
+    public function getProduct(): Product
     {
         return $this->product;
     }
 
-    public function setProduct(?Product $product): self
+    public function setProduct(Product $product): self
     {
         $this->product = $product;
 
