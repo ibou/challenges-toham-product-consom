@@ -122,4 +122,97 @@ class UserTest extends WebTestCase
             "Cette chaîne est trop courte. Elle doit avoir au minimum 3 caractères.",
         ];
     }
+
+    public function testSuccessEditUser(): void
+    {
+        $client = static::createAuthenticatedClient("customer@gmail.com");
+
+        /** @var RouterInterface $router */
+        $router = $client->getContainer()->get("router");
+
+
+        $crawler = $client->request(
+            Request::METHOD_GET,
+            $router->generate(
+                "user_edit_infos"
+            )
+        );
+
+        $form = $crawler->filter("form[name=user_infos]")->form(
+            [
+                "user_infos[email]" => "email@gmail.com",
+                "user_infos[firstName]" => "John",
+                "user_infos[lastName]" => "Doe",
+            ]
+        );
+        $client->submit($form);
+        $this->assertResponseStatusCodeSame(Response::HTTP_FOUND);
+        $client->followRedirect();
+        $this->assertResponseStatusCodeSame(Response::HTTP_OK);
+    }
+
+    /**
+     * @param array $formData
+     * @param string $errorMessage
+     * @dataProvider provideBadRequestsForEditInfo
+     */
+    public function testBadRequest(array $formData, string $errorMessage): void
+    {
+        $client = static::createAuthenticatedClient("customer@gmail.com");
+
+        /** @var RouterInterface $router */
+        $router = $client->getContainer()->get("router");
+
+
+        $crawler = $client->request(
+            Request::METHOD_GET,
+            $router->generate(
+                "user_edit_infos"
+            )
+        );
+
+        $form = $crawler->filter("form[name=user_infos]")->form(
+            $formData
+        );
+        $client->submit($form);
+        $this->assertResponseStatusCodeSame(Response::HTTP_OK);
+
+        $this->assertSelectorTextContains("span.form-error-message", $errorMessage);
+    }
+
+    public function provideBadRequestsForEditInfo(): \Generator
+    {
+        yield [
+            [
+                "user_infos[firstName]" => "",
+                "user_infos[lastName]" => "lastName",
+                "user_infos[email]" => "email@email.com",
+            ],
+            "Cette valeur ne doit pas être vide.",
+        ];
+        yield [
+            [
+                "user_infos[firstName]" => "firstName",
+                "user_infos[lastName]" => "",
+                "user_infos[email]" => "email@email.com",
+            ],
+            "Cette valeur ne doit pas être vide.",
+        ];
+        yield [
+            [
+                "user_infos[firstName]" => "firstName",
+                "user_infos[lastName]" => "lastName",
+                "user_infos[email]" => "",
+            ],
+            "Cette valeur ne doit pas être vide.",
+        ];
+        yield [
+            [
+                "user_infos[firstName]" => "firstName",
+                "user_infos[lastName]" => "lastName",
+                "user_infos[email]" => "fail",
+            ],
+            "Cette valeur n'est pas une adresse email valide.",
+        ];
+    }
 }
