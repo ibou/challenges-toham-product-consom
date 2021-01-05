@@ -65,19 +65,23 @@ class CartTest extends WebTestCase
         /** @var EntityManagerInterface $entityManager */
         $entityManager = $client->getContainer()->get("doctrine.orm.entity_manager");
 
-        $product = $entityManager->getRepository(Product::class)->findOneBy([]);
+        /** @var Producer $producer */
+        $producer = $entityManager->getRepository(Producer::class)->findOneByEmail('producer@gmail.com');
+        
+        /** @var Product $product */
+        $product = $entityManager->getRepository(Product::class)->findOneByFarm($producer->getFarm());
 
         $client->request(Request::METHOD_GET, $router->generate("cart_add", [
             "id" => $product->getId()
         ]));
 
         $this->assertResponseStatusCodeSame(Response::HTTP_FOUND);
-
+    
+        /** @var Producer $producer */
         $producer = $entityManager->getRepository(Producer::class)->findOneByEmail("producer+1@gmail.com");
-
-        $farm = $entityManager->getRepository(Farm::class)->findOneByProducer($producer);
-
-        $product = $entityManager->getRepository(Product::class)->findOneByFarm($farm);
+    
+        /** @var Product $product */
+        $product = $entityManager->getRepository(Product::class)->findOneByFarm($producer->getFarm());
 
         $client->request(Request::METHOD_GET, $router->generate("cart_add", [
             "id" => $product->getId()
