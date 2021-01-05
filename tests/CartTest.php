@@ -67,7 +67,7 @@ class CartTest extends WebTestCase
 
         /** @var Producer $producer */
         $producer = $entityManager->getRepository(Producer::class)->findOneByEmail('producer@gmail.com');
-        
+
         /** @var Product $product */
         $product = $entityManager->getRepository(Product::class)->findOneByFarm($producer->getFarm());
 
@@ -76,10 +76,10 @@ class CartTest extends WebTestCase
         ]));
 
         $this->assertResponseStatusCodeSame(Response::HTTP_FOUND);
-    
+
         /** @var Producer $producer */
         $producer = $entityManager->getRepository(Producer::class)->findOneByEmail("producer+1@gmail.com");
-    
+
         /** @var Product $product */
         $product = $entityManager->getRepository(Product::class)->findOneByFarm($producer->getFarm());
 
