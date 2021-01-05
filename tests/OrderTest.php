@@ -63,7 +63,64 @@ class OrderTest extends WebTestCase
 
         $this->assertEquals("refused", $order->getState());
     }
-    
+
+    public function testSuccessfulAcceptOrder(): void
+    {
+        $client = static::createAuthenticatedClient("producer@gmail.com");
+
+        /** @var RouterInterface $router */
+        $router = $client->getContainer()->get("router");
+
+        $client->request(Request::METHOD_GET, $router->generate("order_manage"));
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_OK);
+
+        /** @var EntityManagerInterface $entityManager */
+        $entityManager = $client->getContainer()->get("doctrine.orm.entity_manager");
+
+        $producer = $entityManager->getRepository(Producer::class)->findOneByEmail("producer@gmail.com");
+
+        $order = $entityManager->getRepository(Order::class)->findOneBy(
+            [
+                "state" => "created",
+                "farm" => $producer->getFarm(),
+            ]
+        );
+
+        $crawler = $client->request(Request::METHOD_GET, $router->generate("order_accept", [
+            "id" => $order->getId()
+        ]));
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_OK);
+
+        $form = $crawler->filter("form[name=accept_order]")->form();
+        $csrfToken = $form->get("accept_order")["_token"]->getValue();
+        $client->request(Request::METHOD_POST, $router->generate("order_accept", [
+            "id" => $order->getId()
+        ]), [
+                             "accept_order" => [
+                                 "_token" => $csrfToken,
+                                 "slots" => [
+                                     [
+                                         "startedAt" => "2021-01-19 10:00:00"
+                                     ],
+                                     [
+                                         "startedAt" => "2021-01-23 10:00:00"
+                                     ]
+                                 ]
+                             ]
+                         ]);
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_FOUND);
+
+        $entityManager->clear();
+
+        $order = $entityManager->getRepository(Order::class)->find($order->getId());
+
+        $this->assertEquals("accepted", $order->getState());
+        $this->assertCount(2, $order->getSlots());
+    }
+
     public function testSuccessfulSettleOrder(): void
     {
         $client = static::createAuthenticatedClient("producer@gmail.com");
