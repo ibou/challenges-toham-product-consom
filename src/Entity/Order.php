@@ -17,7 +17,7 @@ use Ramsey\Uuid\UuidInterface;
  */
 class Order
 {
-
+    
     /**
      * @ORM\Id
      * @ORM\Column(type="uuid")
@@ -26,53 +26,58 @@ class Order
      * @Groups({"read"})
      */
     private UuidInterface $id;
-
+    
     /**
      * @ORM\Column
      */
     private string $state = 'created';
-
+    
     /**
      * @ORM\Column(type="datetime_immutable")
      */
     private \DateTimeImmutable $createdAt;
-
-
+    
+    
     /**
      * @ORM\Column(type="datetime_immutable", nullable=true)
      */
     private ?\DateTimeImmutable $canceledAt = null;
-
+    
     /**
      * @ORM\ManyToOne(targetEntity="Customer")
      * @ORM\JoinColumn(onDelete="CASCADE")
      */
     private Customer $customer;
-
+    
     /**
      * @ORM\OneToMany(targetEntity="OrderLine", mappedBy="order", cascade={"persist"}, fetch="EXTRA_LAZY")
      */
     private Collection $lines;
-
+    
     /**
      * @ORM\ManyToOne(targetEntity="Farm")
      * @ORM\JoinColumn(onDelete="CASCADE")
      */
     private Farm $farm;
-
-
+    
+    
     /**
      * @ORM\Column(type="datetime_immutable", nullable=true)
      */
     private ?\DateTimeImmutable $refusedAt = null;
-
+    
+    /**
+     * @ORM\Column(type="datetime_immutable", nullable=true)
+     */
+    private ?\DateTimeImmutable $settledAt = null;
+    
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
         $this->lines = new ArrayCollection();
     }
-
-
+    
+    
     /**
      * @return UuidInterface
      */
@@ -80,7 +85,7 @@ class Order
     {
         return $this->id;
     }
-
+    
     /**
      * @return string
      */
@@ -88,7 +93,7 @@ class Order
     {
         return $this->state;
     }
-
+    
     /**
      * @param string $state
      * @return self
@@ -96,10 +101,10 @@ class Order
     public function setState(string $state): self
     {
         $this->state = $state;
-
+        
         return $this;
     }
-
+    
     /**
      * @return \DateTimeImmutable
      */
@@ -107,7 +112,7 @@ class Order
     {
         return $this->createdAt;
     }
-
+    
     /**
      * @param \DateTimeImmutable $createdAt
      * @return Order
@@ -115,10 +120,10 @@ class Order
     public function setCreatedAt(\DateTimeImmutable $createdAt): Order
     {
         $this->createdAt = $createdAt;
-
+        
         return $this;
     }
-
+    
     /**
      * @return \DateTimeImmutable|null
      */
@@ -126,7 +131,7 @@ class Order
     {
         return $this->canceledAt;
     }
-
+    
     /**
      * @param \DateTimeImmutable|null $canceledAt
      * @return Order
@@ -134,10 +139,10 @@ class Order
     public function setCanceledAt(?\DateTimeImmutable $canceledAt): Order
     {
         $this->canceledAt = $canceledAt;
-
+        
         return $this;
     }
-
+    
     /**
      * @return Customer
      */
@@ -145,7 +150,7 @@ class Order
     {
         return $this->customer;
     }
-
+    
     /**
      * @param Customer $customer
      * @return Order
@@ -153,10 +158,10 @@ class Order
     public function setCustomer(Customer $customer): Order
     {
         $this->customer = $customer;
-
+        
         return $this;
     }
-
+    
     /**
      * @return ArrayCollection|Collection
      */
@@ -164,7 +169,7 @@ class Order
     {
         return $this->lines;
     }
-
+    
     /**
      * @return int
      */
@@ -172,7 +177,7 @@ class Order
     {
         return array_sum($this->lines->map(fn(OrderLine $line) => $line->getQuantity())->toArray());
     }
-
+    
     /**
      * @return float
      */
@@ -180,7 +185,7 @@ class Order
     {
         return array_sum($this->lines->map(fn(OrderLine $line) => $line->getPriceIncludingTaxes())->toArray());
     }
-
+    
     /**
      * @return \DateTimeImmutable|null
      */
@@ -188,7 +193,7 @@ class Order
     {
         return $this->refusedAt;
     }
-
+    
     /**
      * @param \DateTimeImmutable|null $refusedAt
      */
@@ -196,8 +201,25 @@ class Order
     {
         $this->refusedAt = $refusedAt;
     }
-
-
+    
+    /**
+     * @return \DateTimeImmutable|null
+     */
+    public function getSettledAt(): ?\DateTimeImmutable
+    {
+        return $this->settledAt;
+    }
+    
+    /**
+     * @param \DateTimeImmutable|null $settledAt
+     */
+    public function setSettledAt(?\DateTimeImmutable $settledAt): void
+    {
+        $this->settledAt = $settledAt;
+    }
+    
+    
+    
     /**
      * @return Farm
      */
@@ -205,7 +227,7 @@ class Order
     {
         return $this->farm;
     }
-
+    
     /**
      * @param Farm $farm
      */
