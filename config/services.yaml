@@ -41,3 +41,11 @@ services:
     App\EntityListener\FarmListener:
         tags:
             - { name: doctrine.orm.entity_listener }
+
+    App\Handler\:
+        resource: "../src/Handler/"
+        tags: ["app.handler"]
+
+    App\HandlerFactory\HandlerFactory:
+        arguments:
+            - !tagged_iterator app.handler
