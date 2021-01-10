@@ -11,8 +11,7 @@ interface HandlerFactoryInterface
 {
     /**
      * @param string $handler
-     * @param mixed $data
      * @return HandlerInterface
      */
-    public function createHandler(string $handler, mixed $data): HandlerInterface;
+    public function createHandler(string $handler): HandlerInterface;
 }

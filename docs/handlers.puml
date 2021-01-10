@@ -25,6 +25,5 @@ class CreateProductHandler {
 
 abstract class AbstractHandler implements HandlerInterface
 class CreateProductHandler extends AbstractHandler
-CreateOrderHandler --|> AbstractHandler
 
 @enduml

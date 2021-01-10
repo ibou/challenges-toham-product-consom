@@ -44,8 +44,5 @@ services:
 
     App\Handler\:
         resource: "../src/Handler/"
+        shared: false
         tags: ["app.handler"]
-
-    App\HandlerFactory\HandlerFactory:
-        arguments:
-            - !tagged_iterator app.handler
