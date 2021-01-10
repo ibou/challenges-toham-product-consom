@@ -3,27 +3,29 @@
 
 namespace App\HandlerFactory;
 
+use Psr\Container\ContainerInterface;
+
 /**
  * Class HandlerFactory
  * @package App\HandlerFactory
  */
 class HandlerFactory implements HandlerFactoryInterface
 {
-    private iterable $handlers;
+    private ContainerInterface $container ;
     
     /**
      * HandlerFactory constructor.
-     * @param iterable $handlers
+     * @param ContainerInterface $container
      */
-    public function __construct(iterable $handlers)
+    public function __construct(ContainerInterface $container)
     {
-        $this->handlers = $handlers;
+        $this->container = $container;
     }
     
     
-    public function createHandler(string $handler, $data): HandlerInterface
+    /** @inheritDoc */
+    public function createHandler(string $handler): HandlerInterface
     {
-    
+        return $this->container->get($handler);
     }
-    
 }

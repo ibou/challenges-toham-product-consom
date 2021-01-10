@@ -6,14 +6,13 @@ use App\Entity\Product;
 use App\Form\ProductType;
 use App\Form\StockType;
 use App\Handler\CreateProductHandler;
-use App\Handler\HandlerFactoryInterface;
+use App\HandlerFactory\HandlerFactoryInterface;
 use App\Repository\ProductRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Uid\Uuid;
 
 /**
  * Class ProductController
@@ -49,8 +48,7 @@ class ProductController extends AbstractController
     public function create(Request $request, HandlerFactoryInterface $handlerFactory): Response
     {
         $product = new Product();
-        $handler = $handlerFactory->createHandler(CreateProductHandler::class, $product);
-        
+        $handler = $handlerFactory->createHandler(CreateProductHandler::class);
         if ($handler->handle($request, $product)) {
             return $this->redirectToRoute("product_index");
         }
