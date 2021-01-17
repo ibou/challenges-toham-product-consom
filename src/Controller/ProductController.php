@@ -3,9 +3,9 @@
 namespace App\Controller;
 
 use App\Entity\Product;
-use App\Form\ProductType;
-use App\Form\StockType;
 use App\Handler\CreateProductHandler;
+use App\Handler\StockProductHandler;
+use App\Handler\UpdateProductHandler;
 use App\HandlerFactory\HandlerFactoryInterface;
 use App\Repository\ProductRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -29,15 +29,10 @@ class ProductController extends AbstractController
      */
     public function index(ProductRepository $productRepository): Response
     {
-        return $this->render(
-            'ui/product/index.html.twig',
-            [
-                "products" => $productRepository->findByFarm($this->getUser()->getFarm()),
-
-            ]
-        );
+        return $this->render("ui/product/index.html.twig", [
+            "products" => $productRepository->findByFarm($this->getUser()->getFarm())
+        ]);
     }
-    
     
     /**
      * @param Request $request
@@ -48,48 +43,60 @@ class ProductController extends AbstractController
     public function create(Request $request, HandlerFactoryInterface $handlerFactory): Response
     {
         $product = new Product();
+        
         $handler = $handlerFactory->createHandler(CreateProductHandler::class);
+        
         if ($handler->handle($request, $product)) {
             return $this->redirectToRoute("product_index");
         }
-
-        return $this->render(
-            "ui/product/create.html.twig",
-            [
-                "form" => $handler->createView(),
-            ]
-        );
+        
+        return $this->render("ui/product/create.html.twig", [
+            "form" => $handler->createView()
+        ]);
     }
-
+    
     /**
      * @param Product $product
      * @param Request $request
+     * @param HandlerFactoryInterface $handlerFactory
+     * @return Response
+     * @Route("/{id}/stock", name="product_stock")
+     * @IsGranted("update", subject="product")
+     */
+    public function stock(Product $product, Request $request, HandlerFactoryInterface $handlerFactory): Response
+    {
+        $handler = $handlerFactory->createHandler(StockProductHandler::class);
+        
+        if ($handler->handle($request, $product)) {
+            return $this->redirectToRoute("product_index");
+        }
+        
+        return $this->render("ui/product/stock.html.twig", [
+            "form" => $handler->createView()
+        ]);
+    }
+    
+    /**
+     * @param Product $product
+     * @param Request $request
+     * @param HandlerFactoryInterface $handlerFactory
      * @return Response
      * @Route("/{id}/update", name="product_update")
      * @IsGranted("update", subject="product")
      */
-    public function update(Product $product, Request $request): Response
+    public function update(Product $product, Request $request, HandlerFactoryInterface $handlerFactory): Response
     {
-        $form = $this->createForm(ProductType::class, $product)->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
-            $this->addFlash(
-                "success",
-                "Votre produit ont été modifié avec succès."
-            );
-
+        $handler = $handlerFactory->createHandler(UpdateProductHandler::class);
+        
+        if ($handler->handle($request, $product)) {
             return $this->redirectToRoute("product_index");
         }
-
-        return $this->render(
-            "ui/product/update.html.twig",
-            [
-                "form" => $form->createView(),
-            ]
-        );
+        
+        return $this->render("ui/product/update.html.twig", [
+            "form" => $handler->createView()
+        ]);
     }
-
+    
     /**
      * @param Product $product
      * @return Response
@@ -104,36 +111,6 @@ class ProductController extends AbstractController
             "success",
             "Votre produit ont été supprimé avec succès."
         );
-
         return $this->redirectToRoute("product_index");
-    }
-
-    /**
-     * @param Product $product
-     * @param Request $request
-     * @return Response
-     * @Route("/{id}/stock", name="product_stock")
-     * @IsGranted("update", subject="product")
-     */
-    public function stock(Product $product, Request $request): Response
-    {
-        $form = $this->createForm(StockType::class, $product)->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
-            $this->addFlash(
-                "success",
-                "Le stock de votre produit ont été modifié avec succès."
-            );
-
-            return $this->redirectToRoute("product_index");
-        }
-
-        return $this->render(
-            "ui/product/stock.html.twig",
-            [
-                "form" => $form->createView(),
-            ]
-        );
     }
 }

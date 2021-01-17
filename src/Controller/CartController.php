@@ -4,6 +4,8 @@ namespace App\Controller;
 
 use App\Entity\Product;
 use App\Form\CartType;
+use App\Handler\CartHandler;
+use App\HandlerFactory\HandlerFactoryInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -30,7 +32,7 @@ class CartController extends AbstractController
         $this->getUser()->addToCart($product);
         $this->getDoctrine()->getManager()->flush();
         $this->addFlash("success", "Le produit a bien été ajouté à votre panier.");
-
+        
         return $this->redirectToRoute(
             "farm_show",
             [
@@ -38,30 +40,26 @@ class CartController extends AbstractController
             ]
         );
     }
-
+    
     /**
      * @param Request $request
+     * @param HandlerFactoryInterface $handlerFactory
      * @return Response
      * @Route("/", name="cart_index")
      */
-    public function index(Request $request): Response
+    public function index(Request $request, HandlerFactoryInterface $handlerFactory): Response
     {
-        $form = $this->createForm(CartType::class, $this->getUser())->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
-            $this->addFlash(
-                "success",
-                "Votre panier a été modifiée avec succès."
-            );
-
+        
+        $handler = $handlerFactory->createHandler(CartHandler::class);
+        
+        if ($handler->handle($request, $this->getUser())) {
             return $this->redirectToRoute("cart_index");
         }
-
+        
         return $this->render(
             "ui/cart/index.html.twig",
             [
-                "form" => $form->createView(),
+                "form" => $handler->createView(),
             ]
         );
     }
