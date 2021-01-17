@@ -7,6 +7,9 @@ tests: vendor
 	make prepare-test
 	php vendor/bin/simple-phpunit
 
+tests-simple:
+	php vendor/bin/simple-phpunit
+
 .PHONY: prepare-dev
 prepare-dev: bin
 	php bin/console cache:clear --env=dev

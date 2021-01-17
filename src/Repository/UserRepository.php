@@ -28,7 +28,7 @@ class UserRepository extends ServiceEntityRepository
      * @return User|null
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
-    public function getUserByForgottenPass(Uuid $token): ?User
+    public function getUserByForgottenPasswordToken(Uuid $token): ?User
     {
         return $this->createQueryBuilder("u")
             ->where("u.forgottenPassword.token = :token")
